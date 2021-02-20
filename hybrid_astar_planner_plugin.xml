@@ -1,0 +1,7 @@
+<library path="lib/libhybrid_astar_planner">
+  <class name="hybrid_astar_planner/HybridAStarPlanner" type="hybrid_astar_planner::HybridAStarPlanner" base_class_type="nav_core::BaseGlobalPlanner">
+    <description>
+      A implementation of a based planner using Hybrid A*
+    </description>
+  </class>
+</library>
