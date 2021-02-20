@@ -1,0 +1,16 @@
+<launch>
+    <!-- <node name="move_base" pkg="hybrid_astar_planner" type="test_planner"> -->
+    <!-- <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen"> -->
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/global_costmap_params.yaml" command="load" /> 
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/base_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/move_base_params.yaml" command="load" />
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" /><!--这个标志是选择使用特定的全局规划器-->
+        <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <!-- </node> -->
+    <node name="tf_broadcaster" pkg="hybrid_astar_planner" type="tf_test_broadcaster" output="screen" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find hybrid_astar_planner)/test_the_plugin/maps/map.yaml" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hybrid_astar_planner)/test_the_plugin/launch/config.rviz" />
+</launch>
