@@ -5,6 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /MarkerArray5
+        - /MarkerArray5/Namespaces1
       Splitter Ratio: 0.5
     Tree Height: 300
   - Class: rviz/Selection
@@ -211,7 +213,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -3.725290298461914e-8
+      Angle: -0.8450002670288086
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -221,11 +223,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 11.089664459228516
+      Scale: 40.182613372802734
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 24.114686965942383
-      Y: 26.258228302001953
+      X: 8.91369342803955
+      Y: 4.4910993576049805
     Saved: ~
 Window Geometry:
   Displays:
@@ -244,4 +246,4 @@ Window Geometry:
     collapsed: false
   Width: 1252
   X: 317
-  Y: 109
+  Y: 79

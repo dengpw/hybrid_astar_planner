@@ -90,7 +90,10 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         ros::Publisher plan_pub_;
         ros::Publisher path_vehicles_pub_;//用于在路径上发布车子位置
         costmap_2d::Costmap2D* costmap;
+        
     private:
+        void clearPathNodes(void);
+        visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
 
 };
 

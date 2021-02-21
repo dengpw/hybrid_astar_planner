@@ -18,7 +18,6 @@ namespace hybrid_astar_planner
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2DROS *costmap_ros)
     {
         initialize(name, costmap_ros->getCostmap(), costmap_ros->getGlobalFrameID());
-        // std::cout << "abc" + name <<std::endl;//test if i can print add string with another whith '+'
     }
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2D *_costmap, std::string frame_id) {
         if(!initialized_) {
@@ -31,8 +30,6 @@ namespace hybrid_astar_planner
         }
         initialized_ = true;
     }
-
-
 
     void HybridAStarPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path) {
         if (!initialized_) {
@@ -56,7 +53,7 @@ namespace hybrid_astar_planner
         }
 
         plan_pub_.publish(gui_path);
-        std::cout << "pub the path" << std::endl;
+        std::cout << "Publish the path to Rviz" << std::endl;
     }
     void HybridAStarPlanner::publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path) {
         if (!initialized_) {
@@ -64,14 +61,13 @@ namespace hybrid_astar_planner
                     "This planner has not been initialized yet, but it is being used, please call initialize() before use");
             return;
         }
-        visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
         visualization_msgs::Marker pathVehicle;
+        
         pathVehicle.header.stamp = ros::Time(0);
         pathVehicle.color.r = 102.f / 255.f;
         pathVehicle.color.g = 217.f / 255.f;
         pathVehicle.color.b = 239.f / 255.f;
         pathVehicle.type = visualization_msgs::Marker::ARROW;
-        pathVehicle.id = 1;
         pathVehicle.header.frame_id = "path";
         pathVehicle.scale.x = 1;
         pathVehicle.scale.y = 1;
@@ -80,13 +76,26 @@ namespace hybrid_astar_planner
         int nodeSize = path.size();
         for(int i = 0; i<nodeSize; i++) {
             pathVehicle.header.stamp = ros::Time(0);
-            pathVehicle.pose.position = path[i].pose.position;
-            pathVehicle.pose.orientation = tf::createQuaternionMsgFromYaw(1.0);
+            pathVehicle.pose = path[i].pose;
             pathVehicle.id = i;
             pathNodes.markers.push_back(pathVehicle);
         }
+        
         path_vehicles_pub_.publish(pathNodes);
+        
     }
 
+    void HybridAStarPlanner::clearPathNodes() {
+        visualization_msgs::Marker node;
+        pathNodes.markers.clear();
+        node.action = visualization_msgs::Marker::DELETEALL;
+        node.header.frame_id = "path";
+        node.header.stamp = ros::Time(0);
+        node.id = 0;
+        node.action = 3;
+        pathNodes.markers.push_back(node);
+        path_vehicles_pub_.publish(pathNodes);
+        std::cout << "clean the path nodes" <<std::endl;
+    }
 }//!end of name space hybrid_astar_planner
 

@@ -17,9 +17,11 @@ class TestPlanner{
         std::vector<geometry_msgs::PoseStamped>* planner_plan_;
     private:
         bool makePlan(std::vector<geometry_msgs::PoseStamped> &plan);
+        bool transformStarPose(void);
         boost::shared_ptr<nav_core::BaseGlobalPlanner> planner_;
         geometry_msgs::PoseStamped goal_pose;
         geometry_msgs::PoseStamped start_pose;
+        geometry_msgs::TransformStamped start_transform;
         bool valid_start;
         bool vaild_goal;
         ros::NodeHandle n;
