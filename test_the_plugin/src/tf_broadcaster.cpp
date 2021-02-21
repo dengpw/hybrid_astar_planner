@@ -17,22 +17,19 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 // map pointer
 nav_msgs::OccupancyGridPtr grid;//定义广播信息的格式
+tf::Transform transform;        //创建tf的广播器
+tf::Quaternion q;
 
 // map callback
-// 这是回调函数，将当前网格图设置成新的网格图
 void setMap(const nav_msgs::OccupancyGrid::Ptr map) {
   std::cout << "Creating transform for map..." << std::endl;
   grid = map;
 }
 
-void postcallback(const geometry_msgs::PoseWithCovarianceStampedPtr& post) {
-  //创建tf的广播器
-  static tf::TransformBroadcaster br;
-
+void start_pose_callback(const geometry_msgs::PoseWithCovarianceStampedPtr& post) {
+  
   // 初始化tf数据
-  tf::Transform transform;
   transform.setOrigin(tf::Vector3(post->pose.pose.position.x, post->pose.pose.position.y, 0.0));
-  tf::Quaternion q;
   //定义旋转的四元参数
   //具体的TF变换内容可以参考《机器人学导论》（美）克来格（Craig,J.J）
   q.setX(post->pose.pose.orientation.x);
@@ -41,20 +38,23 @@ void postcallback(const geometry_msgs::PoseWithCovarianceStampedPtr& post) {
   q.setW(post->pose.pose.orientation.w);
   transform.setRotation(q);
   // 广播world与base_link之间的tf数据
-  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "base_link"));
+  
   std::cout << "Transform initialpost to base_link" << std::endl;
 }
+
 int main(int argc, char** argv) {
   // initiate the broadcaster
   ros::init(argc, argv, "tf_broadcaster");
   ros::NodeHandle n;
   ros::NodeHandle nh;
   // subscribe to map updates
+  std::cout << "Transform initialpost to base_link" << std::endl;
   ros::Subscriber sub_map = n.subscribe("/occ_map", 1, setMap);
-  ros::Subscriber sub_post = nh.subscribe("/initialpose", 1, &postcallback);
+  ros::Subscriber sub_start = nh.subscribe("/initialpose", 1, &start_pose_callback);
   tf::Pose tfPose;
-  ros::Rate r(1);
+  ros::Rate r(10);
   tf::TransformBroadcaster broadcaster;
+  tf::TransformBroadcaster br;
   while (ros::ok()) {
     // transform from geometry msg to TF
     if (grid != nullptr) {
@@ -71,6 +71,7 @@ int main(int argc, char** argv) {
       tf::StampedTransform(
         tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0, 0, 0)),
         ros::Time::now(), "map", "path"));
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "base_link"));
     ros::spinOnce();
     r.sleep();
   }

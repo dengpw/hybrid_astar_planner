@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(hybrid_astar_planner)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_COMPILER "g++")
+
 add_subdirectory(test_the_plugin)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -31,7 +34,8 @@ add_executable(tf_test_broadcaster test_the_plugin/src/tf_broadcaster.cpp)
 target_link_libraries(tf_test_broadcaster ${catkin_LIBRARIES})
 
 add_library(${PROJECT_NAME}
-  src/planner_core.cpp
+  src/planner_core.cpp 
+  src/hybrid_astar.cpp 
 )
 
 install(FILES bgp_plugin.xml

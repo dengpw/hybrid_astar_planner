@@ -46,14 +46,14 @@
 namespace hybrid_astar_planner {
 //这个类插件实现的多态的时候，你定义了函数就必须区实现，否则会报错！！！
 /**
- * @class PlannerCore
- * @brief Provides a ROS wrapper for the global_planner planner which runs a fast, interpolated navigation function on a costmap.
+ * @class HybridAStarPlanner
+ * @brief Provides a ROS wrapper for the HybridAStarPlanner planner which runs a fast, interpolated navigation function on a costmap.
  */
 
 class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
     public:
         /**
-         * @brief  Default constructor for the PlannerCore object
+         * @brief  Default constructor for the HybridAStarPlanner object
          */
         HybridAStarPlanner();
         /**
@@ -74,14 +74,22 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          */
         bool makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                       std::vector<geometry_msgs::PoseStamped>& plan);
-
+        /**
+        * @brief Publish the plan to RVIZ 
+        * @param path the vector contain the path
+        */
         void publishPlan(const std::vector<geometry_msgs::PoseStamped>& path);
+        /**
+        * @brief Publish the path node to RVIZ 
+        * @param path the vector contain the path
+        */
         void publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path);
     protected:
         bool initialized_;
         std::string frame_id_;
         ros::Publisher plan_pub_;
         ros::Publisher path_vehicles_pub_;//用于在路径上发布车子位置
+        costmap_2d::Costmap2D* costmap;
     private:
 
 };
