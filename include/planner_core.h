@@ -34,17 +34,16 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: Eitan Marder-Eppstein
- *         David V. Lu!!
+ * Author: dengpw
  *********************************************************************/
-#define POT_HIGH 1.0e10        // unassigned cell potential
+// #define POT_HIGH 1.0e10        // unassigned cell potential
 #include <vector>
 #include <nav_msgs/GetPlan.h>
 #include <pluginlib/class_list_macros.h>
 #include <nav_core/base_global_planner.h>
 #include <visualization_msgs/MarkerArray.h>
 namespace hybrid_astar_planner {
-//这个类插件实现的多态的时候，你定义了函数就必须区实现，否则会报错！！！
+//类插件实现的多态的时候，若在头文件中定义了函数，那么就必须有这个函数的实现，否则会报错！！！
 /**
  * @class HybridAStarPlanner
  * @brief Provides a ROS wrapper for the HybridAStarPlanner planner which runs a fast, interpolated navigation function on a costmap.
@@ -56,6 +55,12 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          * @brief  Default constructor for the HybridAStarPlanner object
          */
         HybridAStarPlanner();
+
+        /**
+         * @brief  Default deconstructor for the HybridAStarPlanner object
+         */
+        ~HybridAStarPlanner();
+
         /**
          * @brief  Initialization function for the HybridAStarPlanner
          * @param  name The name of this planner
@@ -75,14 +80,14 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         bool makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                       std::vector<geometry_msgs::PoseStamped>& plan);
         /**
-        * @brief Publish the plan to RVIZ 
-        * @param path the vector contain the path
-        */
+         * @brief Publish the plan to RVIZ 
+         * @param path the vector contain the path
+         */
         void publishPlan(const std::vector<geometry_msgs::PoseStamped>& path);
         /**
-        * @brief Publish the path node to RVIZ 
-        * @param path the vector contain the path
-        */
+         * @brief Publish the path node to RVIZ 
+         * @param path the vector contain the path
+         */
         void publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path);
     protected:
         bool initialized_;
@@ -92,11 +97,31 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         costmap_2d::Costmap2D* costmap;
         
     private:
+        /**
+         * @brief Clarn the visualization_msgs::Marker 清理可视化信息的标记点
+         */
         void clearPathNodes(void);
+
+        bool hybridAstarPlanner(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+                      unsigned char* path);
+
+        /**
+         * @brief Check whethe the start pose is available
+         * @param start A reference to start pose
+         * @return True if the start pose is available
+        */
+        bool checkStartPose(const geometry_msgs::PoseStamped &start);
+
+        /**
+         * @brief Check whethe the goal pose is available
+         * @param goal A reference to goal pose
+         * @return True if the goal pose is available
+        */
+        bool checkgoalPose(const geometry_msgs::PoseStamped &goal);
         visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
 
 };
 
-} //end namespace global_planner
+} //end namespace hybrid_astar_planner
 
 #endif

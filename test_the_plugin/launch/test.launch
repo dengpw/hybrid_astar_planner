@@ -7,8 +7,13 @@
         <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/global_costmap_params.yaml" command="load" /> 
         <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/base_local_planner_params.yaml" command="load" />
         <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/move_base_params.yaml" command="load" />
+        <rosparam file="$(find hybrid_astar_planner)/test_the_plugin/param/plugins.yaml" command="load" ns="/costmap_node/costmap"/>
         <param name="base_global_planner" value="global_planner/GlobalPlanner" /><!--这个标志是选择使用特定的全局规划器-->
         <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+        <param name="param1" value="1" />
+	    <param name="param2" value="2" />
+    	<param name="param3" value="3" />
+	    <param name="param4" value="4" />
     <!-- </node> -->
     <node name="tf_broadcaster" pkg="hybrid_astar_planner" type="tf_test_broadcaster" output="screen" />
     <node name="map_server" pkg="map_server" type="map_server" args="$(find hybrid_astar_planner)/test_the_plugin/maps/map.yaml" />

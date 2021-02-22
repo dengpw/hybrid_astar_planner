@@ -18,6 +18,7 @@ namespace hybrid_astar_planner
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2DROS *costmap_ros)
     {
         initialize(name, costmap_ros->getCostmap(), costmap_ros->getGlobalFrameID());
+        
     }
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2D *_costmap, std::string frame_id) {
         if(!initialized_) {
@@ -29,7 +30,11 @@ namespace hybrid_astar_planner
             costmap = _costmap;
         }
         initialized_ = true;
-    }
+    }//end of constructor function HybridAStarPlanner
+
+    HybridAStarPlanner::~HybridAStarPlanner() {
+
+    }//end of deconstructor function HybridAStarPlanner
 
     void HybridAStarPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path) {
         if (!initialized_) {
@@ -54,7 +59,7 @@ namespace hybrid_astar_planner
 
         plan_pub_.publish(gui_path);
         std::cout << "Publish the path to Rviz" << std::endl;
-    }
+    }//end of publishPlan
     void HybridAStarPlanner::publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path) {
         if (!initialized_) {
             ROS_ERROR(
@@ -83,7 +88,7 @@ namespace hybrid_astar_planner
         
         path_vehicles_pub_.publish(pathNodes);
         
-    }
+    }//end of publishPathNodes
 
     void HybridAStarPlanner::clearPathNodes() {
         visualization_msgs::Marker node;
@@ -97,5 +102,6 @@ namespace hybrid_astar_planner
         path_vehicles_pub_.publish(pathNodes);
         std::cout << "clean the path nodes" <<std::endl;
     }
-}//!end of name space hybrid_astar_planner
+    
+}//end of name space hybrid_astar_planner
 

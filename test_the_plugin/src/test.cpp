@@ -1,11 +1,11 @@
 /**
    @file  test.cpp
-   @brief Main entry point of the test program, the test program is using to test the hybrid_Astar_plugin for
+   @brief Main entry point of the test program, the test program is using to test the hybrid_Astar plugin of
           move_base package.
    @author dengpw 2021/02/21 
 */
-//函数注释！！
-//清理旧的标定点
+//函数注释！！    解决
+//清理旧的标定点  解决
 #include <tf/transform_listener.h>
 #include "test_plugins.h"
 int main(int argc, char** argv) {

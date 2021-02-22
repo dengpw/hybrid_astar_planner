@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Map1
         - /MarkerArray5
         - /MarkerArray5/Namespaces1
       Splitter Ratio: 0.5
@@ -183,8 +184,18 @@ Visualization Manager:
       Marker Topic: /plugin_test_node/HybridAStarPlanner/pathVehicle
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /plugin_test_node/global_costmap/costmap
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:
@@ -213,7 +224,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -0.8450002670288086
+      Angle: -6.51925802230835e-7
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -223,11 +234,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 40.182613372802734
+      Scale: 12.604070663452148
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 8.91369342803955
-      Y: 4.4910993576049805
+      X: 7.032653331756592
+      Y: 5.417185306549072
     Saved: ~
 Window Geometry:
   Displays:
@@ -246,4 +257,4 @@ Window Geometry:
     collapsed: false
   Width: 1252
   X: 317
-  Y: 79
+  Y: 49

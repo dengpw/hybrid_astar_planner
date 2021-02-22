@@ -4,9 +4,19 @@ raytrace_range: 3.5
 robot_radius: 0.3
 inflation_radius: 0.55
 transform_tolerance: 0.5
-
+plugins:
+      - {name: static_map,       type: "costmap_2d::StaticLayer"}
+      - {name: obstacles,        type: "costmap_2d::VoxelLayer"}  
+      - {name: inflation_layer,        type: "costmap_2d::InflationLayer"}
 observation_sources: scan
-
+# obstacles:
+#    observation_sources: scan
+#    scan: {data_type: LaserScan, topic: /scan, marking: true, clearing: true, expected_update_rate: 0}
+map: 
+  data_type: LaserScan 
+  topic: /map 
+  marking: true 
+  clearing: true
 scan: 
   data_type: LaserScan 
   topic: scan 
