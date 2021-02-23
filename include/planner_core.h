@@ -108,7 +108,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
 
         void nodeToPlan(Node2D* node, std::vector<geometry_msgs::PoseStamped>& plan);
 
-        float calcH(Node2D* node, const geometry_msgs::PoseStamped& goal);
+        // float calcH(Node2D* node, const geometry_msgs::PoseStamped& goal);
 
         /**
          * @brief Check whethe the start pose is available

@@ -16,8 +16,8 @@ public:
     
     void setX(int _x) { x = _x; }
     void setY(int _y) { y = _y; }
-    void setG(int _g) { g = _g; }
-    void setH(int _h) { h = _h; }
+    void setG(float _g) { g = _g; }
+    void setH(float _h) { h = _h; }
     void setClosedSet() { c = true; o = false; }
     void setOpenSet() { o = true; }
     void setPerd(Node2D* _perd) { perd = _perd; }
@@ -25,8 +25,8 @@ public:
     int getY(void) { return y; }
     float getF(void) const { return g + h; }
     float calcG(Node2D const *partent);
-    float getG() { return g; }
-    float calcH(Node2D const *goal);
+    float getG() const { return g; }
+    float calcH(Node2D const &goal);
     int getindex(int width) { return (y * width + x); }
     bool isOpenSet() { return o; }
     bool isClosedSet() { return c; }

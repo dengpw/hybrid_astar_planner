@@ -62,24 +62,31 @@ namespace hybrid_astar_planner
     bool HybridAStarPlanner::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan) {
         const unsigned char* charMap = costmap->getCharMap(); 
+        int counter = 0;
         priorityQueue openSet;
         Node2D* pathNode2D = new Node2D[cells_x * cells_y]();
-        Node2D* startPose = &pathNode2D[int(start.pose.position.x) *cells_x + int(start.pose.position.y)];
+        Node2D *startPose = &pathNode2D[int(start.pose.position.x) *cells_x + int(start.pose.position.y)];
+            //    *goalPose = &pathNode2D[int(goal.pose.position.x) *cells_x + int(goal.pose.position.y)];
         Node2D goalPose(goal.pose.position.x, goal.pose.position.y);
         startPose->setX(start.pose.position.x);
         startPose->setY(start.pose.position.y);
         startPose->setG(0);
+        // goalPose->setX(goal.pose.position.x);
+        // goalPose->setY(goal.pose.position.y);
         openSet.push( startPose );
         startPose->setOpenSet();
         Node2D* tmpStart;
         while(openSet.size()) {
+            ++counter;
             tmpStart = openSet.top();
+            std::cout << tmpStart->getF() << std::endl;
             openSet.pop();
             std::vector<Node2D*> adjacentNodes;
             if(tmpStart->getX() == int(goal.pose.position.x) && tmpStart->getY() == int(goal.pose.position.y))
             {
                 std::cout << "got a plan" << std::endl;
                 nodeToPlan(tmpStart,plan);
+                std::cout << counter << std::endl;
                 delete [] pathNode2D;
                 return true;
             }
@@ -87,11 +94,11 @@ namespace hybrid_astar_planner
                 for (int y = tmpStart->getY() - 1; y <= tmpStart->getY() + 1; ++y) {
                     if (charMap[x  + y* cells_x] <= 1) {
                         // std::cout << int(charMap[x * cells_x + y]) << std::endl;
-                        if(!pathNode2D[x * cells_x + y].isOpenSet()) {
+                        // if(!pathNode2D[x * cells_x + y].isOpenSet()) {
                             pathNode2D[x * cells_x + y].setX(x);
                             pathNode2D[x * cells_x + y].setY(y);
                             adjacentNodes.push_back(&pathNode2D[x * cells_x + y]);
-                        }
+                        // }
 
                     }
                 }
@@ -100,14 +107,17 @@ namespace hybrid_astar_planner
             //下面正式开始A*算法的核心搜索部分
             for (std::vector<Node2D*>::iterator it = adjacentNodes.begin(); it != adjacentNodes.end(); ++it) {
                 Node2D* point = *it;
-                int g;
+                float g;
                 if (!point->isClosedSet()) {
                     g = point->calcG(tmpStart);
-                    if (!point->isOpenSet() || (g < point->getG())) {
+                    // std::cout << g <<std::endl;
+                    if (!point->isOpenSet() || (g < point->getG())) {//
                         point->setPerd(tmpStart);
                         point->setG(g);
                         if(!point->isOpenSet()) {
-                            point->setH(calcH(point,goal));
+                            // point->setH(calcH(point,goal));
+                            point->calcH(goalPose);
+                            point->setOpenSet();//!!!!!这里很关键
                             openSet.push(point);
                         }
                         else {
@@ -117,7 +127,7 @@ namespace hybrid_astar_planner
                     }
                 }
             }
-
+            std::cout << "--------------------------" <<std::endl;
             // while(adjacentNodes.size()) {
             //     Node2D* tmpPtr;
             //     tmpPtr = adjacentNodes.back();
@@ -125,6 +135,7 @@ namespace hybrid_astar_planner
             //     std::cout << "the x axis: " << tmpPtr->getX() << "the Y axis: " << tmpPtr->getY() << std::endl;
             // }
         }
+        
         delete [] pathNode2D;
         return false;
     }
@@ -139,8 +150,8 @@ namespace hybrid_astar_planner
             tmpPtr = tmpPtr->getPerd();
         }
     }
-    float HybridAStarPlanner::calcH(Node2D* node, const geometry_msgs::PoseStamped& goal) {
-
-    }
+    // float HybridAStarPlanner::calcH(Node2D* node, const geometry_msgs::PoseStamped& goal) {
+        
+    // }
 
 }//end namespace hybrid_astar_planner
