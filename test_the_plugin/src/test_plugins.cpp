@@ -8,28 +8,15 @@ TestPlanner::TestPlanner(tf2_ros::Buffer &_tf):
 tf(_tf){
     //订阅目标主题，绑定响应函数,这里使用suscribe订阅目标点，当目标点刷新就重新进行路径规划
     make_plane = n.subscribe("/move_base_simple/goal", 1, &TestPlanner::setgoal, this);
-    ros::NodeHandle nh("/global_costmap");
-    // ros::Subscriber cost_nh = 
     //定义类插件的名称，以便之后接入系统
     global_planner = std::string("hybrid_astar_planner/HybridAStarPlanner");    
 
     pluginlib::ClassLoader<nav_core::BaseGlobalPlanner> bgp_loader_("nav_core", "nav_core::BaseGlobalPlanner"); //导入插件
     planner_plan_ = new std::vector<geometry_msgs::PoseStamped>();
     //这个global_costmap,是它自己的名字，这里需要用param服务器给到costmap的参数，才会初始化
-    // int param1,param2,param3,param4;
-    // param1 = nh.param("/param1",111);
-    // param2 = nh.param("/param2",222);
-    // param3 = nh.param("/param3",333);
-    // param4 = nh.param("/param4",444);
-    // ROS_INFO("param1 = %d" , param1);
-    // ROS_INFO("param2 = %d" , param2);
-    // ROS_INFO("param3 = %d" , param3);
-    // ROS_INFO("param4 = %d" , param4);
-    if(!(nh.hasParam("plugins"))){
-    
-        exit(0);
-    } 
-    costmap = new costmap_2d::Costmap2DROS("global_costmap", tf);     
+
+    // 需要注意的是，这里的初始化函数Costmap2DROS在构造时候的问题，如果构造时出错（订阅不到指定参数，造成无法指定插件）需要将“~/”删掉~
+    costmap = new costmap_2d::Costmap2DROS("global_costmap", tf);         
 
     std::cout << "creat the global costmap" << std::endl;
     //指定costmap中的base_link为起始坐标

@@ -42,6 +42,7 @@
 #include <pluginlib/class_list_macros.h>
 #include <nav_core/base_global_planner.h>
 #include <visualization_msgs/MarkerArray.h>
+#include "node2d.h"
 namespace hybrid_astar_planner {
 //类插件实现的多态的时候，若在头文件中定义了函数，那么就必须有这个函数的实现，否则会报错！！！
 /**
@@ -102,8 +103,12 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          */
         void clearPathNodes(void);
 
-        bool hybridAstarPlanner(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                      unsigned char* path);
+        bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+                    int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan);
+
+        void nodeToPlan(Node2D* node, std::vector<geometry_msgs::PoseStamped>& plan);
+
+        float calcH(Node2D* node, const geometry_msgs::PoseStamped& goal);
 
         /**
          * @brief Check whethe the start pose is available
@@ -121,6 +126,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
 
 };
+
 
 } //end namespace hybrid_astar_planner
 

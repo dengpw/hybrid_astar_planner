@@ -36,6 +36,7 @@ target_link_libraries(tf_test_broadcaster ${catkin_LIBRARIES})
 add_library(${PROJECT_NAME}
   src/planner_core.cpp 
   src/hybrid_astar.cpp 
+  src/node2d.cpp
 )
 
 install(FILES bgp_plugin.xml
