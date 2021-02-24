@@ -1,6 +1,7 @@
 #include <iostream>
 #include "planner_core.h"
 #include <tf/transform_datatypes.h>
+#include <ros/node_handle.h>
 //先使用A*算法完成    解决
 //地图的信息从哪里得来？-地图信息通过costmap_ros传入。  解决
 
@@ -23,10 +24,13 @@ namespace hybrid_astar_planner
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2D *_costmap, std::string frame_id) {
         if(!initialized_) {
             std::cout << "initializing the hybrid Astar planner" << std::endl;
+            ros::NodeHandle nh("~/global_costmap");
             ros::NodeHandle private_nh("~/" + name);
+            nh.param("resolution", resolution, 1.0);
+            ROS_INFO("the resolution of costmap is %lf",resolution);
             frame_id_ = frame_id;
-            plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
-            path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("pathVehicle", 1);
+            plan_pub_ = private_nh.advertise<nav_msgs::Path>("/plan", 1);
+            path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("/pathVehicle", 1);
             costmap = _costmap;
         }
         initialized_ = true;
@@ -53,7 +57,7 @@ namespace hybrid_astar_planner
         // Extract the plan in world co-ordinates, we assume the path is all in the same frame
         for (unsigned int i = 0; i < path.size(); i++) {
             transform_path.pose.position = path[i].pose.position;
-            gui_path.poses[i] = transform_path;
+            gui_path.poses[i] = transform_path;//
             
         }
 
@@ -94,7 +98,7 @@ namespace hybrid_astar_planner
         visualization_msgs::Marker node;
         pathNodes.markers.clear();
         node.action = visualization_msgs::Marker::DELETEALL;
-        node.header.frame_id = "path";
+        node.header.frame_id = frame_id_;
         node.header.stamp = ros::Time(0);
         node.id = 0;
         node.action = 3;

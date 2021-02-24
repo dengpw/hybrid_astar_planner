@@ -10,12 +10,12 @@ tf(_tf){
     make_plane = n.subscribe("/move_base_simple/goal", 1, &TestPlanner::setgoal, this);
     //定义类插件的名称，以便之后接入系统
     global_planner = std::string("hybrid_astar_planner/HybridAStarPlanner");    
-
+    // ros::NodeHandle nh("~/global_costmap");
     pluginlib::ClassLoader<nav_core::BaseGlobalPlanner> bgp_loader_("nav_core", "nav_core::BaseGlobalPlanner"); //导入插件
     planner_plan_ = new std::vector<geometry_msgs::PoseStamped>();
     //这个global_costmap,是它自己的名字，这里需要用param服务器给到costmap的参数，才会初始化
 
-    // 需要注意的是，这里的初始化函数Costmap2DROS在构造时候的问题，如果构造时出错（订阅不到指定参数，造成无法指定插件）需要将“~/”删掉~
+    // 需要注意的是，这里的初始化函数Costmap2DROS在构造时候的问题，~代表的是私有域的数据
     costmap = new costmap_2d::Costmap2DROS("global_costmap", tf);         
 
     std::cout << "creat the global costmap" << std::endl;

@@ -9,7 +9,6 @@ float Node2D::calcG(Node2D const *partent) {
         
     }
     else g = 1;
-    //std::cout << partent->g << std::endl;
     return g + partent->getG();
 }
 
@@ -18,9 +17,6 @@ float Node2D::calcH(Node2D const &goal) {
     dx = abs(x - goal.x);
     dy = abs(y - goal.y);
     h = dx +dy;
-    // std::cout << "the h of ::" << h <<std::endl;
 }
-
-
 
 }

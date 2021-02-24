@@ -124,6 +124,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         */
         bool checkgoalPose(const geometry_msgs::PoseStamped &goal);
         visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
+        double resolution;
 
 };
 

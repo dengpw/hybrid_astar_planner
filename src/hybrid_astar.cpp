@@ -4,20 +4,25 @@
 namespace hybrid_astar_planner
 {
     // 解决函数进入、退出的问题  解决
-    // 像A*算法一样，进行路径规划
-
+    // 像A*算法一样，进行路径规划 解决
+    // 标注信息
+    // 与move_base适配
+    // 将模拟仿真的部分继承为一个launch文件
+    // costmap部分仍然存在着问题
     bool HybridAStarPlanner::makePlan(const geometry_msgs::PoseStamped &start,
                                       const geometry_msgs::PoseStamped &goal, std::vector<geometry_msgs::PoseStamped>& plan)
     {
         std::cout << "the start pose of planner x:" << start.pose.position.x << " y:" << start.pose.position.y << std::endl;
         std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
+        ROS_INFO("the resolution of costmap is %lf",resolution);
         geometry_msgs::PoseStamped p;
         //检查设定的目标点参数是否合规
         if(!(checkStartPose(start) && checkgoalPose(goal))) {
             ROS_WARN("Failed to create a global plan!");
             return false;
         }
-        if(costmap->getCost(goal.pose.position.x, goal.pose.position.y) > 1) {
+        std::cout << int(costmap->getCost(goal.pose.position.x/resolution + 20, goal.pose.position.y/resolution + 20)) << std::endl;
+        if(costmap->getCost(goal.pose.position.x/resolution + 20, goal.pose.position.y/resolution + 20) > 1) {
             ROS_WARN("The goal is occupalide,please reset the goal");
             return false;
         }
@@ -36,7 +41,7 @@ namespace hybrid_astar_planner
         // plan.push_back(p);
         clearPathNodes();
         publishPlan(plan);//path只能发布2D的节点
-        publishPathNodes(plan);
+        // publishPathNodes(plan);
         return true;
     }//end of makeplan
 
@@ -65,11 +70,11 @@ namespace hybrid_astar_planner
         int counter = 0;
         priorityQueue openSet;
         Node2D* pathNode2D = new Node2D[cells_x * cells_y]();
-        Node2D *startPose = &pathNode2D[int(start.pose.position.x) *cells_x + int(start.pose.position.y)];
+        Node2D *startPose = &pathNode2D[int(start.pose.position.x/resolution) *cells_x + int(start.pose.position.y/resolution)];
             //    *goalPose = &pathNode2D[int(goal.pose.position.x) *cells_x + int(goal.pose.position.y)];
-        Node2D goalPose(goal.pose.position.x, goal.pose.position.y);
-        startPose->setX(start.pose.position.x);
-        startPose->setY(start.pose.position.y);
+        Node2D goalPose(goal.pose.position.x/resolution, goal.pose.position.y/resolution);
+        startPose->setX(start.pose.position.x/resolution);
+        startPose->setY(start.pose.position.y/resolution);
         startPose->setG(0);
         // goalPose->setX(goal.pose.position.x);
         // goalPose->setY(goal.pose.position.y);
@@ -79,10 +84,10 @@ namespace hybrid_astar_planner
         while(openSet.size()) {
             ++counter;
             tmpStart = openSet.top();
-            std::cout << tmpStart->getF() << std::endl;
+            // std::cout << tmpStart->getF() << std::endl;
             openSet.pop();
             std::vector<Node2D*> adjacentNodes;
-            if(tmpStart->getX() == int(goal.pose.position.x) && tmpStart->getY() == int(goal.pose.position.y))
+            if(tmpStart->getX() == int(goal.pose.position.x/resolution) && tmpStart->getY() == int(goal.pose.position.y/resolution))
             {
                 std::cout << "got a plan" << std::endl;
                 nodeToPlan(tmpStart,plan);
@@ -127,13 +132,7 @@ namespace hybrid_astar_planner
                     }
                 }
             }
-            std::cout << "--------------------------" <<std::endl;
-            // while(adjacentNodes.size()) {
-            //     Node2D* tmpPtr;
-            //     tmpPtr = adjacentNodes.back();
-            //     adjacentNodes.pop_back();
-            //     std::cout << "the x axis: " << tmpPtr->getX() << "the Y axis: " << tmpPtr->getY() << std::endl;
-            // }
+
         }
         
         delete [] pathNode2D;
@@ -150,8 +149,5 @@ namespace hybrid_astar_planner
             tmpPtr = tmpPtr->getPerd();
         }
     }
-    // float HybridAStarPlanner::calcH(Node2D* node, const geometry_msgs::PoseStamped& goal) {
-        
-    // }
 
 }//end namespace hybrid_astar_planner
