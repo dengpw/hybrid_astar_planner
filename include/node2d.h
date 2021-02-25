@@ -26,7 +26,7 @@ public:
     float getF(void) const { return g + h; }
     float calcG(Node2D const *partent);
     float getG() const { return g; }
-    float calcH(Node2D const &goal);
+    float calcH(Node2D const *goal);
     int getindex(int width) { return (y * width + x); }
     bool isOpenSet() { return o; }
     bool isClosedSet() { return c; }

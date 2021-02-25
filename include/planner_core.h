@@ -90,6 +90,8 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          * @param path the vector contain the path
          */
         void publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path);
+
+        bool makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp);
     protected:
         bool initialized_;
         std::string frame_id_;
@@ -125,6 +127,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         bool checkgoalPose(const geometry_msgs::PoseStamped &goal);
         visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
         double resolution;
+        ros::ServiceServer make_plan_srv_;
 
 };
 

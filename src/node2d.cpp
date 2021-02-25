@@ -12,10 +12,10 @@ float Node2D::calcG(Node2D const *partent) {
     return g + partent->getG();
 }
 
-float Node2D::calcH(Node2D const &goal) {
+float Node2D::calcH(Node2D const *goal) {
     float dx, dy;
-    dx = abs(x - goal.x);
-    dy = abs(y - goal.y);
+    dx = abs(x - goal->x);
+    dy = abs(y - goal->y);
     h = dx +dy;
 }
 

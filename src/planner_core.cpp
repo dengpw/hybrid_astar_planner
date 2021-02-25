@@ -27,10 +27,11 @@ namespace hybrid_astar_planner
             ros::NodeHandle nh("~/global_costmap");
             ros::NodeHandle private_nh("~/" + name);
             nh.param("resolution", resolution, 1.0);
-            ROS_INFO("the resolution of costmap is %lf",resolution);
+            ROS_INFO("the resolution of costmap is %lf", _costmap->getResolution());
             frame_id_ = frame_id;
-            plan_pub_ = private_nh.advertise<nav_msgs::Path>("/plan", 1);
-            path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("/pathVehicle", 1);
+            plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
+            path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("pathVehicle", 1);
+            make_plan_srv_ = private_nh.advertiseService("make_plan", &HybridAStarPlanner::makePlanService, this);
             costmap = _costmap;
         }
         initialized_ = true;
@@ -58,7 +59,6 @@ namespace hybrid_astar_planner
         for (unsigned int i = 0; i < path.size(); i++) {
             transform_path.pose.position = path[i].pose.position;
             gui_path.poses[i] = transform_path;//
-            
         }
 
         plan_pub_.publish(gui_path);
@@ -77,7 +77,7 @@ namespace hybrid_astar_planner
         pathVehicle.color.g = 217.f / 255.f;
         pathVehicle.color.b = 239.f / 255.f;
         pathVehicle.type = visualization_msgs::Marker::ARROW;
-        pathVehicle.header.frame_id = "path";
+        pathVehicle.header.frame_id = frame_id_;
         pathVehicle.scale.x = 1;
         pathVehicle.scale.y = 1;
         pathVehicle.scale.z = 1;
@@ -107,5 +107,13 @@ namespace hybrid_astar_planner
         std::cout << "clean the path nodes" <<std::endl;
     }
     
+
+    bool HybridAStarPlanner::makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp) {
+        makePlan(req.start, req.goal, resp.plan.poses);
+        resp.plan.header.stamp = ros::Time::now();
+        resp.plan.header.frame_id = frame_id_;
+        return true;
+    }
+
 }//end of name space hybrid_astar_planner
 

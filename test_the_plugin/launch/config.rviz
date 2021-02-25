@@ -6,7 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Map2
-        - /MarkerArray3/Status1
+        - /Path1
+        - /MarkerArray3
       Splitter Ratio: 0.5
     Tree Height: 300
   - Class: rviz/Selection
@@ -146,7 +147,7 @@ Visualization Manager:
       Radius: 0.029999999329447746
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
-      Topic: /plan
+      Topic: /move_base/HybridAStarPlanner/plan
       Unreliable: false
       Value: true
     - Class: rviz/MarkerArray
@@ -154,7 +155,7 @@ Visualization Manager:
       Marker Topic: /pathVehicle
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
