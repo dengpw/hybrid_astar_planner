@@ -43,6 +43,8 @@ add_library(${PROJECT_NAME}
   src/node2d.cpp
   src/a_start.cpp
   src/visualize.cpp
+  src/node3d.cpp
+  src/hybrid_astar.cpp
 )
 
 install(FILES bgp_plugin.xml

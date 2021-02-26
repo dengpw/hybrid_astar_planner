@@ -114,17 +114,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          */
         void clearPathNodes(void);
 
-        /**
-         * @brief Find the path between the start pose and goal pose
-         * @param start the reference of start pose 
-         * @param goal the reference of goal pose 
-         * @param cells_x the number of the cells of the costmap in x axis
-         * @param cells_y the number of the cells of the costmap in y axis
-         * @param plan the refrence of plan;
-         * @return true if a valid plan was found.
-        */
-        bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                    int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan);
+
 
 
         /**
@@ -143,6 +133,7 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
         visualization_msgs::MarkerArray pathNodes;//节点数据结构，用于可视化
         double resolution;
         ros::ServiceServer make_plan_srv_;
+        bool use_hybrid_astar;
 
 };
 

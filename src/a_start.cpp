@@ -1,5 +1,3 @@
-// #include "planner_core.h"
-// #include "algorithm.h"
 #include "node2d.h"
 #include "astar.h"
 namespace hybrid_astar_planner {
@@ -8,7 +6,7 @@ namespace hybrid_astar_planner {
         
         const unsigned char* charMap = costmap->getCharMap(); 
         int counter = 0;
-        priorityQueue openSet;
+        boost::heap::binomial_heap<Node2D*,boost::heap::compare<CompareNodes>> openSet;
         unsigned int startx, starty, goalx, goaly;
         costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty);
         costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalx, goaly);
@@ -29,7 +27,7 @@ namespace hybrid_astar_planner {
             ++counter;
             tmpStart = openSet.top();
             openSet.pop();
-            std::vector<Node2D*> adjacentNodes;
+            //如果找到目标点则返回   
             if(tmpStart->getX() == goalPose->getX() && tmpStart->getY() == goalPose->getY() )
             {
                 std::cout << "got a plan" << std::endl;
@@ -38,16 +36,9 @@ namespace hybrid_astar_planner {
                 delete [] pathNode2D;
                 return true;
             }
-            for (int x = tmpStart->getX() - 1; x <= tmpStart->getX() + 1; ++x) {
-                for (int y = tmpStart->getY() - 1; y <= tmpStart->getY() + 1; ++y) {
-                    if (charMap[x  + y* cells_x] <= 1) {
-                            pathNode2D[x * cells_x + y].setX(x);
-                            pathNode2D[x * cells_x + y].setY(y);
-                            adjacentNodes.push_back(&pathNode2D[x * cells_x + y]);
-                    }
-                }
-            }//end of for
+            std::vector<Node2D*> adjacentNodes = gatAdjacentPoints(cells_x, cells_y, charMap, pathNode2D, tmpStart );    
             tmpStart->setClosedSet();
+
             //下面正式开始A*算法的核心搜索部分
             for (std::vector<Node2D*>::iterator it = adjacentNodes.begin(); it != adjacentNodes.end(); ++it) {
                 Node2D* point = *it;
@@ -74,6 +65,21 @@ namespace hybrid_astar_planner {
         
         delete [] pathNode2D;
         return false;
+    }
+
+    std::vector<Node2D*> astar::gatAdjacentPoints(int cells_x, int cells_y, const unsigned char* charMap, Node2D* pathNode2D, Node2D *point ) {
+        std::vector<Node2D*> adjacentNodes;
+        for (int x = point->getX() - 1; x <= point->getX() + 1; ++x) {
+            for (int y = point->getY() - 1; y <= point->getY() + 1; ++y) {
+                if (charMap[x  + y* cells_y] <= 1) {
+                    pathNode2D[x * cells_x + y].setX(x);
+                    pathNode2D[x * cells_x + y].setY(y);
+                    adjacentNodes.push_back(&pathNode2D[x * cells_x + y]);
+                }
+            }
+        }//end of for
+
+        return adjacentNodes;
     }
 
     void astar::nodeToPlan(Node2D* node, std::vector<geometry_msgs::PoseStamped>& plan) {

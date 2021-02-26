@@ -3,6 +3,7 @@
 #include <tf/transform_datatypes.h>
 #include <ros/node_handle.h>
 #include "astar.h"
+#include "hybrid_astar.h"
 // 尝试编写Hybrid A*算法完成路径规划
 PLUGINLIB_EXPORT_CLASS(hybrid_astar_planner::HybridAStarPlanner, nav_core::BaseGlobalPlanner)
 
@@ -28,11 +29,12 @@ namespace hybrid_astar_planner
             ROS_INFO("initializing the hybrid Astar planner");
             // 订阅global_costmap的内容，以便获取参数
             ros::NodeHandle nh("~/global_costmap");
+            ros::NodeHandle nh2("~/");
             ros::NodeHandle private_nh("~/" + name);
 
             nh.param("resolution", resolution, 1.0);
             ROS_INFO("the resolution of costmap is %lf",resolution);
-            
+            nh2.param("use_hybrid_astar", use_hybrid_astar, true);
             costmap = _costmap;
             frame_id_ = frame_id;
             //  初始化发布路径的主题
@@ -65,7 +67,13 @@ namespace hybrid_astar_planner
         std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
         // astar AstarPlanner(frame_id_,costmap);
         Expander* _planner;
-        _planner = new astar(frame_id_,costmap);
+        if (use_hybrid_astar) {
+            _planner = new hybridAstar(frame_id_,costmap);
+        }
+        else {
+            _planner = new astar(frame_id_,costmap);
+        }
+        
         // 
         //检查设定的目标点参数是否合规
         if(!(checkStartPose(start) && checkgoalPose(goal))) {
@@ -105,5 +113,6 @@ namespace hybrid_astar_planner
         ROS_WARN("The Goal pose is out of the map!");
         return false;
     }//end of checkgoalPose
+
 }//end of name space hybrid_astar_planner
 

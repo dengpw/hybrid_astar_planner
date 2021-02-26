@@ -1,26 +1,17 @@
-#ifndef _ASTAR_H
-#define _ASTAR_H
+#ifndef _HYBRID_ASTAR_H
+#define _HYBRID_ASTAR_H
 
 #include <vector>
 #include "algorithm.h"
 #include "expander.h"
-#include "node2d.h"
+#include "node3d.h"
 namespace hybrid_astar_planner {
-class Index {
-    public:
-        Index(int a,float b) {
-            i = a;
-            cost = b;
-        }
-        int i;
-        float cost;
-    };
 
-class astar : public Expander
+class hybridAstar : public Expander
 {
 
     public:
-    astar(std::string frame_id, costmap_2d::Costmap2D* _costmap)
+    hybridAstar(std::string frame_id, costmap_2d::Costmap2D* _costmap)
     :Expander(frame_id, _costmap) {
 
     }
@@ -36,19 +27,21 @@ class astar : public Expander
     */
     bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan );
-    ~astar(){ }
+    ~hybridAstar(){ }
     private:
 
-    std::vector<Node2D*> gatAdjacentPoints(int cells_x, int cells_y, const unsigned char* charMap, Node2D* pathNode2D, Node2D *point );
+    std::vector<Node3D*> gatAdjacentPoints(int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode2D, Node3D *point );
 
     /**
      * @brief transform the 2Dnode to geometry_msgs::PoseStamped
      * @param node the ptr of node
      * @param plan the refrence of plan
     */
-    void nodeToPlan(Node2D* node, std::vector<geometry_msgs::PoseStamped>& plan);
+    void nodeToPlan(Node3D* node, std::vector<geometry_msgs::PoseStamped>& plan);
     /* data */
 };
+
+
 
 
 }//end of namespace hybrid_astar_planner
