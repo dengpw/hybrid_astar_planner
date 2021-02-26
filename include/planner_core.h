@@ -80,19 +80,28 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          */
         bool makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                       std::vector<geometry_msgs::PoseStamped>& plan);
+   
         /**
          * @brief Publish the plan to RVIZ 
          * @param path the vector contain the path
          */
         void publishPlan(const std::vector<geometry_msgs::PoseStamped>& path);
+
         /**
          * @brief Publish the path node to RVIZ 
          * @param path the vector contain the path
          */
         void publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path);
 
+        /**
+         * @brief The call back function of makeplan service
+         * @param req 
+         * @param resp the plan the planner made
+         * @return True if a valid plan was found, false otherwise
+        */
         bool makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp);
     protected:
+
         bool initialized_;
         std::string frame_id_;
         ros::Publisher plan_pub_;
@@ -105,12 +114,18 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          */
         void clearPathNodes(void);
 
+        /**
+         * @brief Find the path between the start pose and goal pose
+         * @param start the reference of start pose 
+         * @param goal the reference of goal pose 
+         * @param cells_x the number of the cells of the costmap in x axis
+         * @param cells_y the number of the cells of the costmap in y axis
+         * @param plan the refrence of plan;
+         * @return true if a valid plan was found.
+        */
         bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                     int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan);
 
-        void nodeToPlan(Node2D* node, std::vector<geometry_msgs::PoseStamped>& plan);
-
-        // float calcH(Node2D* node, const geometry_msgs::PoseStamped& goal);
 
         /**
          * @brief Check whethe the start pose is available

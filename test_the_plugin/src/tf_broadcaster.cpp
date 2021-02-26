@@ -55,6 +55,12 @@ int main(int argc, char** argv) {
   ros::Rate r(10);
   tf::TransformBroadcaster broadcaster;
   tf::TransformBroadcaster br;
+  transform.setOrigin(tf::Vector3(0, 0, 0.0));
+  q.setX(0);
+  q.setY(0);
+  q.setZ(0);
+  q.setW(1);
+  transform.setRotation(q);
   while (ros::ok()) {
     // transform from geometry msg to TF
     if (grid != nullptr) {

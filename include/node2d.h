@@ -52,9 +52,7 @@ public:
         Node2D* perd;
 };
 
-//###################################################
-//                                    NODE COMPARISON
-//###################################################
+
 /*!
    \brief A structure to sort nodes in a heap structure
 */
@@ -69,6 +67,6 @@ struct CompareNodes {
   }
 };
 
-}//end of name space hybrid_astar_planner
+}//end of namespace hybrid_astar_planner
 
 #endif //end of node2d.h

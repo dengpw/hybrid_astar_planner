@@ -41,7 +41,7 @@ void TestPlanner::setgoal(const geometry_msgs::PoseStamped::ConstPtr& _goal) {
     goal_pose.header = _goal->header;
     transformStarPose();
     costmap->start();
-    std::cout << "I am seeing a new goal x:" << goal_pose.pose.position.x << " y:" << goal_pose.pose.position.y << std::endl;
+    // std::cout << "I am seeing a new goal x:" << goal_pose.pose.position.x << " y:" << goal_pose.pose.position.y << std::endl;
     planner_->makePlan(start_pose, goal_pose, *planner_plan_);
 }
 

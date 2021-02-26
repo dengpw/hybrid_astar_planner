@@ -7,18 +7,22 @@ set(CMAKE_CXX_COMPILER "g++")
 add_subdirectory(test_the_plugin)
 
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
   pluginlib
   costmap_2d
   roscpp
   nav_core
+  tf2_ros
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
+  geometry_msgs
   pluginlib
   roscpp
   nav_core
+  tf2_ros
 )
 
 include_directories(
@@ -37,6 +41,8 @@ add_library(${PROJECT_NAME}
   src/planner_core.cpp 
   src/hybrid_astar.cpp 
   src/node2d.cpp
+  src/a_start.cpp
+  src/visualize.cpp
 )
 
 install(FILES bgp_plugin.xml

@@ -2,37 +2,45 @@
 #include "planner_core.h"
 #include <tf/transform_datatypes.h>
 #include <ros/node_handle.h>
-//先使用A*算法完成    解决
-//地图的信息从哪里得来？-地图信息通过costmap_ros传入。  解决
-
-//测试内容，程序编写不可能每一次都上机运行      解决
-//也不可能每一次都进行仿真，需要存入一张地图，直接启动进行模拟      解决
-//需要将map转化为costmap    解决
+#include "astar.h"
+// 尝试编写Hybrid A*算法完成路径规划
 PLUGINLIB_EXPORT_CLASS(hybrid_astar_planner::HybridAStarPlanner, nav_core::BaseGlobalPlanner)
 
 namespace hybrid_astar_planner
 {
+
     HybridAStarPlanner::HybridAStarPlanner():
-            initialized_(false),costmap(NULL)  {
+            initialized_(false),costmap(NULL),resolution(1.0)  {
         std::cout << "creating the hybrid Astar planner" << std::endl;
     }
+
+
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2DROS *costmap_ros)
     {
         initialize(name, costmap_ros->getCostmap(), costmap_ros->getGlobalFrameID());
         
     }
+
+
     void HybridAStarPlanner::initialize(std::string name, costmap_2d::Costmap2D *_costmap, std::string frame_id) {
         if(!initialized_) {
-            std::cout << "initializing the hybrid Astar planner" << std::endl;
+            //
+            ROS_INFO("initializing the hybrid Astar planner");
+            // 订阅global_costmap的内容，以便获取参数
             ros::NodeHandle nh("~/global_costmap");
             ros::NodeHandle private_nh("~/" + name);
+
             nh.param("resolution", resolution, 1.0);
-            ROS_INFO("the resolution of costmap is %lf", _costmap->getResolution());
+            ROS_INFO("the resolution of costmap is %lf",resolution);
+            
+            costmap = _costmap;
             frame_id_ = frame_id;
+            //  初始化发布路径的主题
             plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
             path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("pathVehicle", 1);
+
             make_plan_srv_ = private_nh.advertiseService("make_plan", &HybridAStarPlanner::makePlanService, this);
-            costmap = _costmap;
+            
         }
         initialized_ = true;
     }//end of constructor function HybridAStarPlanner
@@ -41,72 +49,6 @@ namespace hybrid_astar_planner
 
     }//end of deconstructor function HybridAStarPlanner
 
-    void HybridAStarPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path) {
-        if (!initialized_) {
-            ROS_ERROR(
-                    "This planner has not been initialized yet, but it is being used, please call initialize() before use");
-            return;
-        }
-        //create a message for the plan
-        geometry_msgs::PoseStamped transform_path;
-        nav_msgs::Path gui_path;
-        gui_path.poses.resize(path.size());
-
-        gui_path.header.frame_id = frame_id_;
-        gui_path.header.stamp = ros::Time::now();
-
-        // Extract the plan in world co-ordinates, we assume the path is all in the same frame
-        for (unsigned int i = 0; i < path.size(); i++) {
-            transform_path.pose.position = path[i].pose.position;
-            gui_path.poses[i] = transform_path;//
-        }
-
-        plan_pub_.publish(gui_path);
-        std::cout << "Publish the path to Rviz" << std::endl;
-    }//end of publishPlan
-    void HybridAStarPlanner::publishPathNodes(const std::vector<geometry_msgs::PoseStamped>& path) {
-        if (!initialized_) {
-            ROS_ERROR(
-                    "This planner has not been initialized yet, but it is being used, please call initialize() before use");
-            return;
-        }
-        visualization_msgs::Marker pathVehicle;
-        
-        pathVehicle.header.stamp = ros::Time(0);
-        pathVehicle.color.r = 102.f / 255.f;
-        pathVehicle.color.g = 217.f / 255.f;
-        pathVehicle.color.b = 239.f / 255.f;
-        pathVehicle.type = visualization_msgs::Marker::ARROW;
-        pathVehicle.header.frame_id = frame_id_;
-        pathVehicle.scale.x = 1;
-        pathVehicle.scale.y = 1;
-        pathVehicle.scale.z = 1;
-        pathVehicle.color.a = 0.1;
-        int nodeSize = path.size();
-        for(int i = 0; i<nodeSize; i++) {
-            pathVehicle.header.stamp = ros::Time(0);
-            pathVehicle.pose = path[i].pose;
-            pathVehicle.id = i;
-            pathNodes.markers.push_back(pathVehicle);
-        }
-        
-        path_vehicles_pub_.publish(pathNodes);
-        
-    }//end of publishPathNodes
-
-    void HybridAStarPlanner::clearPathNodes() {
-        visualization_msgs::Marker node;
-        pathNodes.markers.clear();
-        node.action = visualization_msgs::Marker::DELETEALL;
-        node.header.frame_id = frame_id_;
-        node.header.stamp = ros::Time(0);
-        node.id = 0;
-        node.action = 3;
-        pathNodes.markers.push_back(node);
-        path_vehicles_pub_.publish(pathNodes);
-        std::cout << "clean the path nodes" <<std::endl;
-    }
-    
 
     bool HybridAStarPlanner::makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp) {
         makePlan(req.start, req.goal, resp.plan.poses);
@@ -115,5 +57,53 @@ namespace hybrid_astar_planner
         return true;
     }
 
+
+    bool HybridAStarPlanner::makePlan(const geometry_msgs::PoseStamped &start,
+                                      const geometry_msgs::PoseStamped &goal, std::vector<geometry_msgs::PoseStamped>& plan)
+    {
+        std::cout << "the start pose of planner x:" << start.pose.position.x << " y:" << start.pose.position.y << std::endl;
+        std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
+        // astar AstarPlanner(frame_id_,costmap);
+        Expander* _planner;
+        _planner = new astar(frame_id_,costmap);
+        // 
+        //检查设定的目标点参数是否合规
+        if(!(checkStartPose(start) && checkgoalPose(goal))) {
+            ROS_WARN("Failed to create a global plan!");
+            return false;
+        }
+        plan.clear();
+        //正式将参数传入规划器中
+        _planner->calculatePath(start, goal , costmap->getSizeInCellsX(), costmap->getSizeInCellsY(), plan);
+        //参数后期处理，发布到RViz上进行可视化
+        clearPathNodes();
+        publishPlan(plan);//path只能发布2D的节点
+        publishPathNodes(plan);
+        return true;
+    }//end of makeplan
+
+    bool HybridAStarPlanner::checkStartPose(const geometry_msgs::PoseStamped &start) {
+        unsigned int startx,starty;
+        if (costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty)) {
+            std::cout<< "original x is " << start.pose.position.x << "Transform x" << startx << std::endl;
+            return true;
+        }
+        
+        ROS_WARN("The Start pose is out of the map!");
+        return false;
+    }//end of checkStartPose
+
+    bool HybridAStarPlanner::checkgoalPose(const geometry_msgs::PoseStamped &goal) {
+        unsigned int goalx,goaly;
+        if (costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalx, goaly)) {
+            if (costmap->getCost( goalx, goaly ) > 2) {
+                ROS_WARN("The Goal pose is occupied , please reset the goal!");
+                return false;
+            }
+            return true;
+        }
+        ROS_WARN("The Goal pose is out of the map!");
+        return false;
+    }//end of checkgoalPose
 }//end of name space hybrid_astar_planner
 
