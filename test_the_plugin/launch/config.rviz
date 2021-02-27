@@ -152,10 +152,10 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /pathVehicle
+      Marker Topic: /move_base/HybridAStarPlanner/pathVehicle
       Name: MarkerArray
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -185,7 +185,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -6.51925802230835e-7
+      Angle: -6.034970283508301e-7
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -195,11 +195,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 6.773562431335449
+      Scale: 8.209217071533203
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 40.07722854614258
-      Y: 27.4863224029541
+      X: 9.379249572753906
+      Y: 11.401606559753418
     Saved: ~
 Window Geometry:
   Displays:

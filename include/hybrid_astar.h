@@ -5,6 +5,7 @@
 #include "algorithm.h"
 #include "expander.h"
 #include "node3d.h"
+#define TEST
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander
@@ -29,8 +30,16 @@ class hybridAstar : public Expander
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan );
     ~hybridAstar(){ }
     private:
+ 
+    /**
+     * @brief Get the adjacent pose of a given pose
+     * @param cells_x the number of the cells of the costmap in x axis
+     * @param cells_y the number of the cells of the costmap in y axis
+     * @param charMap 
+    */
+    std::vector<Node3D*> gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode3D, Node3D *point );
 
-    std::vector<Node3D*> gatAdjacentPoints(int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode2D, Node3D *point );
+    int calcIndix(float x, float y, int cells_x, float t); 
 
     /**
      * @brief transform the 2Dnode to geometry_msgs::PoseStamped

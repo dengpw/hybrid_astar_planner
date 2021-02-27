@@ -31,7 +31,7 @@ namespace hybrid_astar_planner {
             if(tmpStart->getX() == goalPose->getX() && tmpStart->getY() == goalPose->getY() )
             {
                 std::cout << "got a plan" << std::endl;
-                nodeToPlan(tmpStart,plan);
+                nodeToPlan(tmpStart, plan);
                 std::cout << counter << std::endl;
                 delete [] pathNode2D;
                 return true;
