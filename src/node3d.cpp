@@ -13,18 +13,13 @@ namespace hybrid_astar_planner {
     }
     float Node3D::calcG(Node3D const *partent) {
         float g;
-        // if((abs(x - partent->x) + abs(y - partent->y)) == 2) {
-        //     g = 1.414;
-            
-        // }
-        // else g = 1;
+
         if(reverse) {
             g = 3;
         }
         else {
             g = 1;
         }
-        // std::cout << partent->getG() << " | ";
         return g + partent->getG();
     }
     float Node3D::calcH(Node3D const *goal) {
