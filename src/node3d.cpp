@@ -1,5 +1,6 @@
 #include "node3d.h"
-
+#include <iostream>
+#include <math.h>
 namespace hybrid_astar_planner {
     void Node3D::setT(float _t) {
         if( _t <0 ) {
@@ -23,12 +24,13 @@ namespace hybrid_astar_planner {
         else {
             g = 1;
         }
+        // std::cout << partent->getG() << " | ";
         return g + partent->getG();
     }
     float Node3D::calcH(Node3D const *goal) {
         float dx, dy;
-        dx = abs(x - goal->x);
-        dy = abs(y - goal->y);
+        dx = fabs(x - goal->x);
+        dy = fabs(y - goal->y);
         h = dx +dy;
     }
 }

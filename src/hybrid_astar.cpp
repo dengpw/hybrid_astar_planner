@@ -1,11 +1,13 @@
 #include "node3d.h"
+#include <math.h>
 #include "constants.h"
 #include "hybrid_astar.h"
 #include <tf/transform_datatypes.h>
 namespace hybrid_astar_planner {
     bool hybridAstar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ) {
-        std::cout << "Using hybrid_astar mode!" << std::endl;
+        ROS_INFO("Using hybrid_astar mode!");
+        
         boost::heap::binomial_heap<Node3D*,boost::heap::compare<CompareNodes>> openSet;
 
         const unsigned char* charMap = costmap->getCharMap(); 
@@ -18,26 +20,9 @@ namespace hybrid_astar_planner {
         Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
         t = tf::getYaw(goal.pose.orientation);
         Node3D* goalPose = new Node3D(goal.pose.position.x, goal.pose.position.y, t , 999, 0, false, nullptr);
-
-
         costmap->worldToMap(start.pose.position.x, start.pose.position.y, startX, startY);
         costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalX, goalY);
         Node3D* pathNode3D = new Node3D[cells_x * cells_y * Constants::headings]();
-        // Node3D* startPose = &pathNode3D[ (startX * cells_x + startY) * Constants::headings ];
-        // Node3D* goalPose = &pathNode3D[ (goalY * cells_x + goalY) * Constants::headings ];
-
-        // startPose->setX(start.pose.position.x);
-        // startPose->setY(start.pose.position.y);
-        // t = tf::getYaw(start.pose.orientation);
-        // startPose->setT(t);
-
-
-        // goalPose->setX(goal.pose.position.x);
-        // goalPose->setY(goal.pose.position.y);
-        // t = tf::getYaw(goal.pose.orientation);
-        // // std::cout << "the t of goal pose" << t << std::endl;
-        // goalPose->setT(t);
-        std::cout << goalPose->getT() << t << std::endl;
         if (Constants::reverse) {
             dir = 6;
         }
@@ -52,28 +37,30 @@ namespace hybrid_astar_planner {
             ++counter;
             tmpNode = openSet.top();
             openSet.pop();
-            if ( int(tmpNode->getX()) == int(goalPose->getX()) && int(tmpNode->getY()) == int(goalPose->getY()) ) {
-                ROS_INFO("got a plan");
+            if ( int(tmpNode->getX()) == int(goalPose->getX()) && int(tmpNode->getY()) == int(goalPose->getY()) && tmpNode->getT() < goalPose->getT()+0.2 && tmpNode->getT() > goalPose->getT()-0.2) {
+                
+                ROS_INFO("Got a plan,loop %d times!",counter);
                 nodeToPlan(tmpNode, plan);
-                std::cout << counter << std::endl;
+                
                 delete [] pathNode3D;
                 return true;
             }
             std::vector<Node3D*> adjacentNodes = gatAdjacentPoints(dir, cells_x, cells_y, charMap, pathNode3D, tmpNode );    
-            // tmpNode->setClosedSet();
+            tmpNode->setClosedSet();
             pathNode3D[tmpNode->getindex(cells_x, Constants::headings)].setClosedSet();
             for (std::vector<Node3D*>::iterator it = adjacentNodes.begin(); it != adjacentNodes.end(); ++it) {
                 Node3D* point = *it;
-                // ROS_INFO("hello1");
+                
                 iPred = point->getindex(cells_x, Constants::headings);
+                pathNode3D[iPred].setX(point->getX());
+                pathNode3D[iPred].setY(point->getY());
+                pathNode3D[iPred].setT(point->getT());
                 if (!pathNode3D[iPred].isClosedSet()) {
                     g = pathNode3D[iPred].calcG(tmpNode);
-                    // g = point->calcG(tmpStart);
-                    // ROS_INFO("hello2");
                     if (!pathNode3D[iPred].isOpenSet() || (g < pathNode3D[iPred].getG())) {//
-                        point->setPerd(tmpNode);
+                        // point->setPerd(tmpNode);
                         point->setG(g);
-                        if(!point->isOpenSet()) {
+                        if(!pathNode3D[iPred].isOpenSet()) {
                             point->calcH(goalPose);
                             point->setOpenSet();//
                             openSet.push(point);
@@ -85,9 +72,6 @@ namespace hybrid_astar_planner {
                     }
                 }
             }
-            
-            // std::cout << "the index of node : " << iPred << std::endl; 
-
         }
 
         goalPose->setPerd(startPose);
@@ -102,11 +86,10 @@ namespace hybrid_astar_planner {
         float xSucc;
         float ySucc;
         float tSucc;
-        int t = point->getT();
+        float t = point->getT();
         int index;
         float x = point->getX();
         float y = point->getY();
-        // std::cout << "the expention of node x : " << x << " Y : " << y << std::endl;
         unsigned int u32_x = int(x);
         unsigned int u32_y = int(y);
         for(int i = 0; i < dir; i++) {
@@ -121,19 +104,17 @@ namespace hybrid_astar_planner {
 
             if (charMap[int(xSucc) + int(ySucc)* cells_y] <= 1) {
                 index = calcIndix(xSucc, ySucc, cells_x, t + Constants::dt[i]);
-                // pathNode3D[index].setX(xSucc);
-                // pathNode3D[index].setY(ySucc);
-                // pathNode3D[index].setT(t + Constants::dt[i]);
+
                 if (i<3) {
-                    tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], point->getG(), 0, false,point);
+                    tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], 999, 0, false,point);
                 }
                 else {
-                    tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], point->getG(), 0, true,point);
+                    tmpPtr = new Node3D(xSucc, ySucc, t - Constants::dt[i-3], 999, 0, true,point);//point->getG()
                 }
                 
 
                 adjacentNodes.push_back(tmpPtr);
-                // std::cout << "the expention of node x : " << tmpPtr->getX() << " Y : " << tmpPtr->getY() << std::endl;
+
             }
         }
 
@@ -159,7 +140,6 @@ namespace hybrid_astar_planner {
             #endif
             tmpPose.header.frame_id = frame_id_;
             tmpPose.pose.orientation = tf::createQuaternionMsgFromYaw(tmpPtr->getT());
-            std::cout << "the goal is reverse " << tmpPtr->isReverse() << std::endl;
             plan.push_back(tmpPose);
             tmpPtr = tmpPtr->getPerd();
         }

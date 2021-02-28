@@ -61,8 +61,8 @@ namespace hybrid_astar_planner
 
 
     bool HybridAStarPlanner::makePlan(const geometry_msgs::PoseStamped &start,
-                                      const geometry_msgs::PoseStamped &goal, std::vector<geometry_msgs::PoseStamped>& plan)
-    {
+                                      const geometry_msgs::PoseStamped &goal, std::vector<geometry_msgs::PoseStamped>& plan) {
+        
         std::cout << "the start pose of planner x:" << start.pose.position.x << " y:" << start.pose.position.y << std::endl;
         std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
         // astar AstarPlanner(frame_id_,costmap);
@@ -93,7 +93,7 @@ namespace hybrid_astar_planner
     bool HybridAStarPlanner::checkStartPose(const geometry_msgs::PoseStamped &start) {
         unsigned int startx,starty;
         if (costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty)) {
-            std::cout<< "original x is " << start.pose.position.x << "Transform x" << startx << std::endl;
+            // std::cout<< "original x is " << start.pose.position.x << "Transform x" << startx << std::endl;
             return true;
         }
         
