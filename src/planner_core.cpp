@@ -4,7 +4,9 @@
 #include <ros/node_handle.h>
 #include "astar.h"
 #include "hybrid_astar.h"
-// 尝试编写Hybrid A*算法完成路径规划
+// 尝试编写Hybrid A*算法完成路径规划 解决
+// 优化Hybrid A*算法
+// 注释！！！
 PLUGINLIB_EXPORT_CLASS(hybrid_astar_planner::HybridAStarPlanner, nav_core::BaseGlobalPlanner)
 
 namespace hybrid_astar_planner
@@ -65,7 +67,6 @@ namespace hybrid_astar_planner
         
         std::cout << "the start pose of planner x:" << start.pose.position.x << " y:" << start.pose.position.y << std::endl;
         std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
-        // astar AstarPlanner(frame_id_,costmap);
         Expander* _planner;
         if (use_hybrid_astar) {
             _planner = new hybridAstar(frame_id_,costmap);
@@ -93,7 +94,6 @@ namespace hybrid_astar_planner
     bool HybridAStarPlanner::checkStartPose(const geometry_msgs::PoseStamped &start) {
         unsigned int startx,starty;
         if (costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty)) {
-            // std::cout<< "original x is " << start.pose.position.x << "Transform x" << startx << std::endl;
             return true;
         }
         

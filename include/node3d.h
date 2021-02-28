@@ -63,17 +63,6 @@ public:
         Node3D* perd;
 };
 
-
-/*!
-   \brief A structure to sort nodes in a heap structure
-*/
-// struct CompareNodes {
-// /// Sorting 3D nodes by increasing C value - the total estimated cost
-//   bool operator()(const Node3D* lhs, const Node3D* rhs) const {
-//     return lhs->getF() > rhs->getF();
-//   }
-// };
-
 }//end of namespace hybrid_astar_planner
 
 #endif //end of node3d.h

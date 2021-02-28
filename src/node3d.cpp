@@ -1,6 +1,7 @@
 #include "node3d.h"
 #include <iostream>
 #include <math.h>
+// 设计启发函数
 namespace hybrid_astar_planner {
     void Node3D::setT(float _t) {
         if( _t <0 ) {
@@ -13,7 +14,6 @@ namespace hybrid_astar_planner {
     }
     float Node3D::calcG(Node3D const *partent) {
         float g;
-
         if(reverse) {
             g = 3;
         }

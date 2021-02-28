@@ -6,12 +6,17 @@
 #include "expander.h"
 #include "node3d.h"
 #define TEST
+#define point_accuracy 0.2
+#define theta_accuracy 0.2
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander
 {
 
     public:
+    /**
+     * @brief  Default constructor for the HybridAStarPlanner object
+    */
     hybridAstar(std::string frame_id, costmap_2d::Costmap2D* _costmap)
     :Expander(frame_id, _costmap) {
 
@@ -28,7 +33,12 @@ class hybridAstar : public Expander
     */
     bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan );
+    
+    /**
+     * @brief Default deconstructor for the HybridAStarPlanner object
+    */
     ~hybridAstar(){ }
+
     private:
  
     /**
@@ -39,6 +49,22 @@ class hybridAstar : public Expander
     */
     std::vector<Node3D*> gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode3D, Node3D *point );
 
+    /**
+     * @brief judge whether is reach the goal pose
+     * @param node the refrence of the node
+     * @param goalPose the goal of the planner
+     * @return true if reach the goal
+    */
+    bool reachGoal(Node3D* node, Node3D* goalPose); 
+
+    /**
+     * @brief get the index of node
+     * @param x the x position axis of the node
+     * @param y the y position axis of the node
+     * @param cells_x the scale of cells in x axis
+     * @param t the depth of the 3D nodes
+     * @return the index of node 
+    */
     int calcIndix(float x, float y, int cells_x, float t); 
 
     /**
@@ -47,7 +73,6 @@ class hybridAstar : public Expander
      * @param plan the refrence of plan
     */
     void nodeToPlan(Node3D* node, std::vector<geometry_msgs::PoseStamped>& plan);
-    /* data */
 };
 
 

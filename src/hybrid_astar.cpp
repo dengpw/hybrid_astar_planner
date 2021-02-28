@@ -7,22 +7,26 @@ namespace hybrid_astar_planner {
     bool hybridAstar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ) {
         ROS_INFO("Using hybrid_astar mode!");
-        
+        // 初始化优先队列，这里使用的是二项堆
         boost::heap::binomial_heap<Node3D*,boost::heap::compare<CompareNodes>> openSet;
-
+        // 初始化并创建一些参数。
+        // 创建charMap,charMap中存储的是地图的障碍物信息
         const unsigned char* charMap = costmap->getCharMap(); 
         unsigned int startX, startY, goalX, goalY;
         int counter = 0;
         int dir;
         int iPred, iSucc;
         float t, g;
+
         t = tf::getYaw(start.pose.orientation);
         Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
         t = tf::getYaw(goal.pose.orientation);
         Node3D* goalPose = new Node3D(goal.pose.position.x, goal.pose.position.y, t , 999, 0, false, nullptr);
+
         costmap->worldToMap(start.pose.position.x, start.pose.position.y, startX, startY);
         costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalX, goalY);
         Node3D* pathNode3D = new Node3D[cells_x * cells_y * Constants::headings]();
+
         if (Constants::reverse) {
             dir = 6;
         }
@@ -34,10 +38,12 @@ namespace hybrid_astar_planner {
         pathNode3D[startPose->getindex(cells_x, Constants::headings)].setClosedSet();
         Node3D* tmpNode;
         while(openSet.size() && counter < Constants::iterations) {
+
             ++counter;
+            // 根据混合A*算法，取堆顶的元素作为下查找节点
             tmpNode = openSet.top();
-            openSet.pop();
-            if ( int(tmpNode->getX()) == int(goalPose->getX()) && int(tmpNode->getY()) == int(goalPose->getY()) && tmpNode->getT() < goalPose->getT()+0.2 && tmpNode->getT() > goalPose->getT()-0.2) {
+            openSet.pop();      //出栈
+            if ( reachGoal(tmpNode, goalPose) ) {
                 
                 ROS_INFO("Got a plan,loop %d times!",counter);
                 nodeToPlan(tmpNode, plan);
@@ -119,6 +125,21 @@ namespace hybrid_astar_planner {
         }
 
         return adjacentNodes;
+    }
+
+    bool hybridAstar::reachGoal(Node3D* node, Node3D* goalPose) {
+        float nodeX = node->getX();
+        float nodeY = node->getY();
+        float goalX = goalPose->getX();
+        float goalY = goalPose->getY();
+        if ((nodeX < (goalX + point_accuracy) && nodeX > (goalX - point_accuracy)) && \
+            (nodeY < (goalY + point_accuracy) && nodeY > (goalY - point_accuracy)) ) {
+                if (node->getT() < goalPose->getT()+theta_accuracy && \
+                    node->getT() > goalPose->getT()-theta_accuracy) {
+                        return true;
+                    }
+            }
+        return false;
     }
 
     int hybridAstar::calcIndix(float x, float y, int cells_x, float t) {
