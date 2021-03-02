@@ -7,6 +7,7 @@
 // 尝试编写Hybrid A*算法完成路径规划 解决
 // 优化Hybrid A*算法
 // 注释！！！
+//register this planner as a BaseGlobalPlanner plugin 此程序注册为BaseGlobalPlanner的路径规划插件
 PLUGINLIB_EXPORT_CLASS(hybrid_astar_planner::HybridAStarPlanner, nav_core::BaseGlobalPlanner)
 
 namespace hybrid_astar_planner

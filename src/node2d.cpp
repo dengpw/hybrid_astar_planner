@@ -16,7 +16,7 @@ float Node2D::calcH(Node2D const *goal) {
     float dx, dy;
     dx = abs(x - goal->x);
     dy = abs(y - goal->y);
-    h = dx +dy;
+    h = dx + dy;
 }
 
 }//end of namespace hybrid_astar_planner

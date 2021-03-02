@@ -29,10 +29,16 @@ public:
     float getT(void) { return t * Constants::deltaHeadingRad; }
     float getTheta(void) { return theta; }
     float getF(void) const { return g + h; }
-    float calcG(Node3D const *partent);
+
+    /**
+     * @brief caculate the G value of the node
+     * @return the G value of the node
+     *
+    */
+    float calcG(void);
     float getG() const { return g; }
     float calcH(Node3D const *goal);
-    int getindex(int width,int depth) { this->index = (int(x) * width + int(y))*depth + t; return index;}
+    int getindex(int width,int depth) { this->index = (int(x) * width + int(y))*depth + t; return index;}//这里的resolution变动了
     bool isOpenSet() { return o; }
     bool isClosedSet() { return c; }
     bool isReverse() { return reverse; }
@@ -57,7 +63,7 @@ public:
         bool c;
         /// the discovered value
         bool d;
-
+        /// the flag of node,Indicates whether the vehicle is in reverse
         bool reverse;
         /// the predecessor pointer
         Node3D* perd;

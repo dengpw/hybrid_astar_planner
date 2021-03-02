@@ -5,9 +5,9 @@
 #include "algorithm.h"
 #include "expander.h"
 #include "node3d.h"
-#define TEST
-#define point_accuracy 0.2
-#define theta_accuracy 0.2
+// #define TEST
+#define point_accuracy 0.5
+#define theta_accuracy 0.5
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander

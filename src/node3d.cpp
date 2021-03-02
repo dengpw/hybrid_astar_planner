@@ -12,16 +12,35 @@ namespace hybrid_astar_planner {
         }
         
     }
-    float Node3D::calcG(Node3D const *partent) {
+    
+    float Node3D::calcG() {
         float g;
+
         if(reverse) {
-            g = 3;
+            if (reverse != perd->reverse) {//对方向改变进行的惩罚
+                g = Constants::dx[0] * Constants::penaltyCOD * Constants::penaltyReversing;
+            }
+            else {
+                g = Constants::dx[0] * Constants::penaltyReversing; 
+            }
         }
         else {
-            g = 1;
+            if (reverse != perd->reverse) {//对方向改变进行的惩罚
+                g = Constants::dx[0] * Constants::penaltyCOD;
+            }
+            else {
+                if (t == perd->t) {
+                    g = Constants::dx[0]; 
+                }
+                else {
+                    g = Constants::dx[0] * Constants::penaltyTurning; 
+                }
+                
+            }
         }
-        return g + partent->getG();
+        return g + perd->getG();
     }
+
     float Node3D::calcH(Node3D const *goal) {
         float dx, dy;
         dx = fabs(x - goal->x);

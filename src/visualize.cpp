@@ -12,13 +12,14 @@ namespace hybrid_astar_planner {
         //create a message for the plan
         geometry_msgs::PoseStamped transform_path;
         nav_msgs::Path gui_path;
-        gui_path.poses.resize(path.size());
+        int size = path.size();
+        gui_path.poses.resize(size);
 
         gui_path.header.frame_id = frame_id_;
         gui_path.header.stamp = ros::Time::now();
 
         // Extract the plan in world co-ordinates, we assume the path is all in the same frame
-        for (unsigned int i = 0; i < path.size(); i++) {
+        for (unsigned int i = 0; i < size; i++) {
             transform_path.pose.position = path[i].pose.position;
             gui_path.poses[i] = transform_path;//
         }
