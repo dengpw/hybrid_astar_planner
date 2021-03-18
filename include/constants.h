@@ -24,6 +24,10 @@ static const double width = 1.75 + 2 * bloating;//车的宽度
 /// [m] --- The length of the vehicle
 static const double length = 2.65 + 2 * bloating;//车的长度
 
+/*
+* 车模需要转弯半径为0.75米的
+* 车身长度需要0.15m(长) * 0.16m(轮宽)
+*/
 /// [m] --- the Minimum turning radius 车辆最小转弯半径 
 static const double r = 6;
 
@@ -47,6 +51,9 @@ static const float deltaHeadingRad = 2 * M_PI / (float)headings; //朝向离散�
 
 /// [c*M_PI] --- The heading part of the goal condition 
 static const float deltaHeadingNegRad = 2 * M_PI - deltaHeadingRad;
+
+/// A flag to toggle the connection of the path via Dubin's shot (true = on; false = off)
+static const bool dubinsShot = true; //切换Dubin路径的开关
 
 // ___________________
 // HEURISTIC CONSTANTS

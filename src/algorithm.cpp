@@ -2,12 +2,13 @@
 #include "algorithm.h"
 #include "dubins.h"
 #include <iostream>
-#include <costmap_2d/costmap_2d.h>
+// #include <costmap_2d/costmap_2d.h>
 namespace hybrid_astar_planner {
 
 
 Node3D* dubinsShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costmap) {
   // start
+  // printf("hello world!");
   double q0[] = { start.getX(), start.getY(), start.getT() };
   // goal
   double q1[] = { goal.getX(), goal.getY(), goal.getT() };
@@ -21,7 +22,7 @@ Node3D* dubinsShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costmap) 
   int i = 0;
   float x = 0.f;
   float length = dubins_path_length(&path);
-
+  // printf("the length of dubins %f",length);
   Node3D* dubinsNodes = new Node3D [(int)(length / Constants::dubinsStepSize) + 1];
 
   while (x <  length) {//这是跳出循环的条件之一：生成的路径没有达到所需要的长度

@@ -209,7 +209,10 @@ int dubins_LSR( double alpha, double beta, double d, double* outputs );
 int dubins_RSL( double alpha, double beta, double d, double* outputs );
 int dubins_LRL( double alpha, double beta, double d, double* outputs );
 int dubins_RLR( double alpha, double beta, double d, double* outputs );
-
+void dubins_segment( double t, double qi[3], double qt[3], int type);
+int dubins_init_normalised( double alpha, double beta, double d, DubinsPath* path);
+double mod2pi( double theta );
+double fmodr( double x, double y);
 }
 
 #endif //end of dubins.h

@@ -47,4 +47,25 @@ namespace hybrid_astar_planner {
         dy = fabs(y - goal->y);
         h = dx +dy;
     }
+
+    //###################################################
+    //                                        IS IN RANGE
+    //###################################################
+    bool Node3D::isInRange(const Node3D& goal) const {
+    int random = rand() % 10 + 1;//产生位于[1, 10]的随机数
+    float dx = std::abs(x - goal.x) / random;
+    float dy = std::abs(y - goal.y) / random;
+    return (dx * dx) + (dy * dy) < Constants::dubinsShotDistance;//距离的平方和在100以内则认为可达
+    }
+
+    //###################################################
+    //                                 3D NODE COMPARISON
+    //###################################################
+    //3d节点的比较函数：x和y同时相同、并且theta在一个阈值范围内时可以认为是同一个Node
+    bool Node3D::operator == (const Node3D& rhs) const {
+    return (int)x == (int)rhs.x &&
+            (int)y == (int)rhs.y &&
+            (std::abs(t - rhs.t) <= Constants::deltaHeadingRad ||
+            std::abs(t - rhs.t) >= Constants::deltaHeadingNegRad);
+    }
 }

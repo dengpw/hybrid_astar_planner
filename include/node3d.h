@@ -43,6 +43,14 @@ public:
     bool isClosedSet() { return c; }
     bool isReverse() { return reverse; }
     Node3D* getPerd() { return perd; }
+    // RANGE CHECKING
+    /// Determines whether it is appropriate to find a analytical solution.
+    bool isInRange(const Node3D& goal) const;//检测是否可以分析方法找到解
+
+    // CUSTOM OPERATORS
+    /// Custom operator to compare nodes. Nodes are equal if their x and y position as well as heading is similar.
+    bool operator == (const Node3D& rhs) const;//位置相同且朝向相似则认为是同一节点
+    
     private:
         /// the x position
         float x;

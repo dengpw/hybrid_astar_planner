@@ -45,6 +45,8 @@ add_library(${PROJECT_NAME}
   src/visualize.cpp
   src/node3d.cpp
   src/hybrid_astar.cpp
+  src/algorithm.cpp
+  src/dubins.cpp
 )
 
 install(FILES bgp_plugin.xml
