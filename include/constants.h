@@ -24,14 +24,20 @@ static const double width = 1.75 + 2 * bloating;//车的宽度
 /// [m] --- The length of the vehicle
 static const double length = 2.65 + 2 * bloating;//车的长度
 
+/// [m] --- the Minimum turning radius 车辆最小转弯半径 
+static const double r = 6;
+
 /// [m] --- The number of discretizations in heading
 /// 车体朝向的离散数量
+// static const int headings = 72;
 static const int headings = 72;
+// const float dy[] = { 0,        -0.0415893,  0.0415893};
+// const float dx[] = { 0.7068582,   0.705224,   0.705224};
+// const float dt[] = { 0,         0.1178097,   -0.1178097};
 
 const float dy[] = { 0,        -0.0415893,  0.0415893};
 const float dx[] = { 0.7068582,   0.705224,   0.705224};
 const float dt[] = { 0,         0.1178097,   -0.1178097};
-
 /// [°] --- The discretization value of the heading (goal condition)
 /// 朝向离散度数(以度表示)
 static const float deltaHeadingDeg = 360 / (float)headings; 

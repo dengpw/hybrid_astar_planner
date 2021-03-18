@@ -7,11 +7,6 @@ namespace hybrid_astar_planner {
     bool hybridAstar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                                         int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ) {
         ROS_INFO("Using hybrid_astar mode!");
-        // static bool runOnce = false;
-        // if (runOnce) {
-        //     return false;
-        // }
-        // runOnce = true;
         std::cout << "the resolution of cost map " << costmap->getResolution() << std::endl;
         // 初始化优先队列，这里使用的是二项堆
         boost::heap::binomial_heap<Node3D*,boost::heap::compare<CompareNodes>> openSet;
@@ -24,17 +19,13 @@ namespace hybrid_astar_planner {
         int dir;
         int iPred, iSucc;
         float t, g;
-        costmap->worldToMap(0, 0, originalX, originalY);
-        float dx = originalX * resolution;
-        float dy = originalY * resolution;
-
+        // t为目标点朝向
         t = tf::getYaw(start.pose.orientation);
-        Node3D* startPose = new Node3D(start.pose.position.x + dx, start.pose.position.y + dy, t , 0, 0, false, nullptr);
-        ROS_INFO("the x position of start node %f ,y %f" , startPose->getX(), startPose->getY());
+        Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
+ 
         t = tf::getYaw(goal.pose.orientation);
-        Node3D* goalPose = new Node3D(goal.pose.position.x + dx, goal.pose.position.y + dy, t , 999, 0, false, nullptr);
+        Node3D* goalPose = new Node3D(goal.pose.position.x, goal.pose.position.y, t , 999, 0, false, nullptr);
 
-        std::cout << "hello world!!" <<std::endl;
         Node3D* pathNode3D = new Node3D[cells_x * cells_y * Constants::headings]();
 
         if (Constants::reverse) {
@@ -61,10 +52,8 @@ namespace hybrid_astar_planner {
                 delete [] pathNode3D;
                 return true;
             }
-            std::cout << "hello world!!A" <<std::endl;
             // 拓展tmpNode临时点目标周围的点，并且使用STL标准库的向量链表进行存储拓展点Node3D的指针数据
-            std::vector<Node3D*> adjacentNodes = gatAdjacentPoints(dir, cells_x, cells_y, charMap, pathNode3D, tmpNode );   
-            std::cout << "hello world!!B" <<std::endl;
+            std::vector<Node3D*> adjacentNodes = gatAdjacentPoints(dir, cells_x, cells_y, charMap, pathNode3D, tmpNode);   
             // 将 tmpNode点在pathNode3D中映射的点加入闭集合中
             pathNode3D[tmpNode->getindex(cells_x, Constants::headings)].setClosedSet();
             for (std::vector<Node3D*>::iterator it = adjacentNodes.begin(); it != adjacentNodes.end(); ++it) {
@@ -108,7 +97,7 @@ namespace hybrid_astar_planner {
     }
 
 
-    std::vector<Node3D*> hybridAstar::gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode3D, Node3D *point ) {
+    std::vector<Node3D*> hybridAstar::gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode3D, Node3D *point) {
         std::vector<Node3D*> adjacentNodes;
         Node3D* tmpPtr;
         float resolution = costmap->getResolution();
@@ -132,7 +121,8 @@ namespace hybrid_astar_planner {
                 ySucc = y - Constants::dx[i - 3] * sin(t) + Constants::dy[i - 3] * cos(t);
             }
             if( costmap->worldToMap(xSucc, ySucc, startX, startY)) {
-                if (charMap[int(xSucc/resolution) + int(ySucc/resolution)* cells_y] <= 1) {
+                
+                if (charMap[startX + startY * cells_x] <= 1) {
                     index = calcIndix(xSucc, ySucc, cells_x, t + Constants::dt[i]);
                     if (i<3) {
                         tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], 999, 0, false,point);
@@ -175,21 +165,11 @@ namespace hybrid_astar_planner {
         std::vector<geometry_msgs::PoseStamped> replan;
         float resolution = costmap->getResolution();
         unsigned int originalX,originalY;
-        costmap->worldToMap(0, 0, originalX, originalY);//获取源点坐标与costMap中存在的偏移
-        float dx = originalX * resolution;
-        float dy = originalY * resolution;
-        // int size = plan.size();
-        // replan.resize(size);
         tmpPose.header.stamp = ros::Time::now();   
         //参数后期处理，发布到RViz上进行可视化
-        // float resolution = costmap->getResolution();
         while(tmpPtr!=nullptr) {
-            // #ifdef TEST
-            tmpPose.pose.position.x = tmpPtr->getX() - dx;
-            tmpPose.pose.position.y = tmpPtr->getY() - dy;
-            // #else
-            // costmap->mapToWorld(tmpPtr->getX()/resolution, tmpPtr->getY()/resolution, tmpPose.pose.position.x, tmpPose.pose.position.y);
-            // #endif
+            tmpPose.pose.position.x = tmpPtr->getX();
+            tmpPose.pose.position.y = tmpPtr->getY();
             tmpPose.header.frame_id = frame_id_;
             tmpPose.pose.orientation = tf::createQuaternionMsgFromYaw(tmpPtr->getT());
             replan.push_back(tmpPose);

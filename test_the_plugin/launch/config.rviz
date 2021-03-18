@@ -155,7 +155,7 @@ Visualization Manager:
       Marker Topic: /move_base/HybridAStarPlanner/pathVehicle
       Name: MarkerArray
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -195,11 +195,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 8.209217071533203
+      Scale: 31.52236557006836
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 9.379249572753906
-      Y: 11.401606559753418
+      X: 6.695564270019531
+      Y: 5.980943202972412
     Saved: ~
 Window Geometry:
   Displays:

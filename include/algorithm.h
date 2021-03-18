@@ -3,6 +3,7 @@
 
 #include "node3d.h"
 #include "node2d.h"
+#include "collisiondetection.h"
 #include <boost/heap/binomial_heap.hpp>
 namespace hybrid_astar_planner {
 // OPEN LIST AS BOOST IMPLEMENTATION
@@ -16,7 +17,8 @@ struct CompareNodes {
     return lhs->getF() > rhs->getF();
   }
 };
- 
+Node3D* dubinsShot(Node3D& start, Node3D& goal);
+
 }
 
 #endif //end of algorithm.h
