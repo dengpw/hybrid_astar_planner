@@ -13,9 +13,9 @@ namespace hybrid_astar_planner {
         Node2D* pathNode2D = new Node2D[cells_x * cells_y]();
         std::cout << "cells" << cells_x * cells_y << std::endl;
         std::cout << "the positon of goal pose " << goalx << " y " << goaly << std::endl;
-        Node2D* startPose = &pathNode2D[ startx * cells_x + starty ];
+        Node2D* startPose = &pathNode2D[ startx * cells_y + starty ];
         
-        Node2D* goalPose = &pathNode2D[ goalx * cells_x + goaly ];
+        Node2D* goalPose = &pathNode2D[ goalx * cells_y + goaly ];
         
         startPose->setX( startx );//start.pose.position.x/resolution
         startPose->setY( starty );
