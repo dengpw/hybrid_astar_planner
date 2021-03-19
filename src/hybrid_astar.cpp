@@ -19,6 +19,8 @@ namespace hybrid_astar_planner {
         int dir;
         int iPred, iSucc;
         float t, g;
+        unsigned int dx,dy;
+        costmap->worldToMap(0, 0, dx, dy);
         // t为目标点朝向
         t = tf::getYaw(start.pose.orientation);
         Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
@@ -36,7 +38,7 @@ namespace hybrid_astar_planner {
         }
 
         openSet.push(startPose);
-        pathNode3D[startPose->getindex(cells_x, Constants::headings)].setClosedSet();
+        pathNode3D[startPose->getindex(cells_x, Constants::headings, resolution, dx, dy)].setClosedSet();
         Node3D* tmpNode;
         Node3D* nSucc;
         while(openSet.size() && counter < Constants::iterations) {
@@ -44,6 +46,7 @@ namespace hybrid_astar_planner {
             ++counter;
             // 根据混合A*算法，取堆顶的元素作为下查找节点
             tmpNode = openSet.top();
+            // std::cout << "the H of node : " << tmpNode->getG() << "the F of node : " << tmpNode->getF() << std::endl;
             openSet.pop();      //出栈
             if ( reachGoal(tmpNode, goalPose) ) {
                 
@@ -72,23 +75,24 @@ namespace hybrid_astar_planner {
             // 拓展tmpNode临时点目标周围的点，并且使用STL标准库的向量链表进行存储拓展点Node3D的指针数据
             std::vector<Node3D*> adjacentNodes = gatAdjacentPoints(dir, cells_x, cells_y, charMap, pathNode3D, tmpNode);   
             // 将 tmpNode点在pathNode3D中映射的点加入闭集合中
-            pathNode3D[tmpNode->getindex(cells_x, Constants::headings)].setClosedSet();
+            pathNode3D[tmpNode->getindex(cells_x, Constants::headings, resolution, dx, dy)].setClosedSet();
             for (std::vector<Node3D*>::iterator it = adjacentNodes.begin(); it != adjacentNodes.end(); ++it) {
                 // 使用stl标准库中的interator迭代器遍历相邻点
                 Node3D* point = *it;
                 
-                iPred = point->getindex(cells_x, Constants::headings);
+                iPred = point->getindex(cells_x, Constants::headings, resolution, dx, dy);
 
                 // 在pathNode3D集合里映射这个点
                 pathNode3D[iPred].setX(point->getX());
                 pathNode3D[iPred].setY(point->getY());
                 pathNode3D[iPred].setT(point->getT());
                 
-                
+                // std::cout << "push to binanalheap  :: " << iPred << std::endl;
                 if (!pathNode3D[iPred].isClosedSet()) {
                     g = point->calcG();
                     if (!pathNode3D[iPred].isOpenSet() || (g < pathNode3D[iPred].getG())) {//
                         // point->setPerd(tmpNode);
+                        // std::cout << "push to binanalheap" << std::endl;
                         point->setG(g);
                         pathNode3D[iPred].setG(g);
                         if(!pathNode3D[iPred].isOpenSet()) {
@@ -142,10 +146,11 @@ namespace hybrid_astar_planner {
                 if (charMap[startX + startY * cells_x] <= 1) {
                     index = calcIndix(xSucc, ySucc, cells_x, t + Constants::dt[i]);
                     if (i<3) {
-                        tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], 999, 0, false,point);
+                        tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], 999, 0, false,point);//+ 
                     }
                     else {
                         tmpPtr = new Node3D(xSucc, ySucc, t - Constants::dt[i-3], 999, 0, true,point);//point->getG()
+                        // std::cout << "the node is reverse! " << std::endl;
                     }
                     adjacentNodes.push_back(tmpPtr);
 

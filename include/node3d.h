@@ -38,7 +38,7 @@ public:
     float calcG(void);
     float getG() const { return g; }
     float calcH(Node3D const *goal);
-    int getindex(int width,int depth) { this->index = (int(x) * width + int(y))*depth + t; return index;}//这里的resolution变动了
+    int getindex(int width, int depth, float resolution, unsigned int dx, unsigned int dy) { this->index = (int(x/resolution + dx) * width + int(y/resolution + dy))*depth + t; return index;}//这里的resolution变动了
     bool isOpenSet() { return o; }
     bool isClosedSet() { return c; }
     bool isReverse() { return reverse; }

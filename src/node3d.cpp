@@ -29,11 +29,14 @@ namespace hybrid_astar_planner {
                 g = Constants::dx[0] * Constants::penaltyCOD;
             }
             else {
+                // std::cout << "the t of this node: " << t << " the t of pred node: " << perd->t << std::endl;
                 if (t == perd->t) {
-                    g = Constants::dx[0]; 
+                    g = Constants::dx[0];
+                    
                 }
                 else {
-                    g = Constants::dx[0] * Constants::penaltyTurning; 
+                    g = Constants::dx[0] * Constants::penaltyTurning;// 
+                    // printf("hello \n");
                 }
                 
             }

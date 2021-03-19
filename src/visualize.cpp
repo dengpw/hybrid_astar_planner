@@ -39,14 +39,14 @@ namespace hybrid_astar_planner {
         visualization_msgs::Marker pathVehicle;
         int nodeSize = path.size();
         pathVehicle.header.stamp = ros::Time(0);
-        pathVehicle.color.r = 102.f / 255.f;
-        pathVehicle.color.g = 217.f / 255.f;
-        pathVehicle.color.b = 239.f / 255.f;
+        pathVehicle.color.r = 52.f / 255.f;
+        pathVehicle.color.g = 250.f / 255.f;
+        pathVehicle.color.b = 52.f / 255.f;
         pathVehicle.type = visualization_msgs::Marker::ARROW;
         pathVehicle.header.frame_id = frame_id_;
-        pathVehicle.scale.x = 1;
-        pathVehicle.scale.y = 1;
-        pathVehicle.scale.z = 1;
+        pathVehicle.scale.x = 0.22;
+        pathVehicle.scale.y = 0.18;
+        pathVehicle.scale.z = 0.12;
         pathVehicle.color.a = 0.1;
         // 转化节点，并同时加上时间戳等信息
         for(int i = 0; i<nodeSize; i++) {
