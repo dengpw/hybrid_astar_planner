@@ -11,6 +11,8 @@ namespace hybrid_astar_planner {
         costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty);
         costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalx, goaly);
         Node2D* pathNode2D = new Node2D[cells_x * cells_y]();
+        std::cout << "cells" << cells_x * cells_y << std::endl;
+        std::cout << "the positon of goal pose " << goalx << " y " << goaly << std::endl;
         Node2D* startPose = &pathNode2D[ startx * cells_x + starty ];
         
         Node2D* goalPose = &pathNode2D[ goalx * cells_x + goaly ];
@@ -71,10 +73,10 @@ namespace hybrid_astar_planner {
         std::vector<Node2D*> adjacentNodes;
         for (int x = point->getX() - 1; x <= point->getX() + 1; ++x) {
             for (int y = point->getY() - 1; y <= point->getY() + 1; ++y) {
-                if (charMap[x  + y* cells_y] <= 1) {
-                    pathNode2D[x * cells_x + y].setX(x);
-                    pathNode2D[x * cells_x + y].setY(y);
-                    adjacentNodes.push_back(&pathNode2D[x * cells_x + y]);
+                if (charMap[x  + y* cells_x] <= 1) {
+                    pathNode2D[x * cells_y + y].setX(x);
+                    pathNode2D[x * cells_y + y].setY(y);
+                    adjacentNodes.push_back(&pathNode2D[x * cells_y + y]);
                 }
             }
         }//end of for

@@ -57,20 +57,20 @@ namespace hybrid_astar_planner {
                 return true;
             }
             else {
-                if (Constants::dubinsShot && tmpNode->isInRange(*goalPose) && !tmpNode->isReverse()) {
-                nSucc = dubinsShot(*tmpNode, *goalPose, costmap);
-                    /*
-                    * dybinsShot方法之后再看
-                    */
-                    //如果Dubins方法能直接命中，即不需要进入Hybrid A*搜索了，直接返回结果
-                    if (nSucc != nullptr && reachGoal(nSucc, goalPose) ) {//&& *nSucc == *goalPose
-                        //DEBUG
-                        // std::cout << "max diff " << max << std::endl;
-                        delete [] pathNode3D;
-                        nodeToPlan(nSucc, plan);
-                        return true;//如果下一步是目标点，可以返回了
-                    }
-                }
+                // if (Constants::dubinsShot && tmpNode->isInRange(*goalPose) && !tmpNode->isReverse()) {
+                // nSucc = dubinsShot(*tmpNode, *goalPose, costmap);
+                //     /*
+                //     * dybinsShot方法之后再看
+                //     */
+                //     //如果Dubins方法能直接命中，即不需要进入Hybrid A*搜索了，直接返回结果
+                //     if (nSucc != nullptr && reachGoal(nSucc, goalPose) ) {//&& *nSucc == *goalPose
+                //         //DEBUG
+                //         // std::cout << "max diff " << max << std::endl;
+                //         delete [] pathNode3D;
+                //         nodeToPlan(nSucc, plan);
+                //         return true;//如果下一步是目标点，可以返回了
+                //     }
+                // }
             }
             // 拓展tmpNode临时点目标周围的点，并且使用STL标准库的向量链表进行存储拓展点Node3D的指针数据
             std::vector<Node3D*> adjacentNodes = gatAdjacentPoints(dir, cells_x, cells_y, charMap, pathNode3D, tmpNode);   

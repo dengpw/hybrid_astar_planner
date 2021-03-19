@@ -35,8 +35,8 @@ namespace hybrid_astar_planner
             ros::NodeHandle nh2("~/");
             ros::NodeHandle private_nh("~/" + name);
 
-            nh.param("resolution", resolution, 1.0);
-            ROS_INFO("the resolution of costmap is %lf",resolution);
+            // nh.param("resolution", resolution, 1.0);
+            // ROS_INFO("the resolution of costmap is %lf",resolution);
             nh2.param("use_hybrid_astar", use_hybrid_astar, true);
             costmap = _costmap;
             frame_id_ = frame_id;
