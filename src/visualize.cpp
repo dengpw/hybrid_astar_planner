@@ -1,5 +1,6 @@
 #include "planner_core.h"
-
+#include "node3d.h"
+#include <tf/transform_datatypes.h>
 namespace hybrid_astar_planner {
     
 
@@ -73,5 +74,30 @@ namespace hybrid_astar_planner {
         path_vehicles_pub_.publish(pathNodes);
         ROS_INFO("Clean the path nodes");
     }
-    
+
+ void publishSearchNodes(Node3D node,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes, int i) {
+        visualization_msgs::Marker pathVehicle;
+        pathVehicle.header.stamp = ros::Time(0);
+        pathVehicle.color.r = 250.f / 255.f;
+        pathVehicle.color.g = 250.f / 255.f;
+        pathVehicle.color.b = 52.f / 255.f;
+        pathVehicle.type = visualization_msgs::Marker::ARROW;
+        pathVehicle.header.frame_id = "map";
+        pathVehicle.scale.x = 0.22;
+        pathVehicle.scale.y = 0.18;
+        pathVehicle.scale.z = 0.12;
+        pathVehicle.color.a = 0.1;
+        // 转化节点，并同时加上时间戳等信息
+            pathVehicle.header.stamp = ros::Time(0);
+            pathVehicle.pose.position.x = node.getX();
+            pathVehicle.pose.position.y = node.getY();
+            pathVehicle.pose.position.z = 0;
+            pathVehicle.pose.orientation = tf::createQuaternionMsgFromYaw(node.getT());
+            pathVehicle.id = i;
+            pathNodes.markers.push_back(pathVehicle);
+        
+        // 发布这些车辆位置标记点
+        pub.publish(pathNodes);
+        
+    }//end of publishPathNodes   
 }

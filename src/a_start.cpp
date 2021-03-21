@@ -1,11 +1,13 @@
 #include "node2d.h"
 #include "astar.h"
+#include <tf/transform_datatypes.h>
 namespace hybrid_astar_planner {
     bool astar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ) {
+                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes ) {
         
         const unsigned char* charMap = costmap->getCharMap(); 
         int counter = 0;
+        float resolution = costmap->getResolution();
         boost::heap::binomial_heap<Node2D*,boost::heap::compare<CompareNodes>> openSet;
         unsigned int startx, starty, goalx, goaly;
         costmap->worldToMap(start.pose.position.x, start.pose.position.y, startx, starty);
@@ -57,6 +59,8 @@ namespace hybrid_astar_planner {
                         }
                         else {
                             openSet.push(point);
+                            std::cout << point->getF() << std::endl;
+                            std::cout << g << std::endl;
                         }
 
                     }
@@ -68,6 +72,8 @@ namespace hybrid_astar_planner {
         delete [] pathNode2D;
         return false;
     }
+
+
 
     std::vector<Node2D*> astar::gatAdjacentPoints(int cells_x, int cells_y, const unsigned char* charMap, Node2D* pathNode2D, Node2D *point ) {
         std::vector<Node2D*> adjacentNodes;
@@ -89,13 +95,24 @@ namespace hybrid_astar_planner {
         geometry_msgs::PoseStamped tmpPose;
         tmpPose.header.stamp = ros::Time::now();   
         //参数后期处理，发布到RViz上进行可视化
-            
+        tmpPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+            std::vector<geometry_msgs::PoseStamped> replan;
         while(tmpPtr!=nullptr) {
             costmap->mapToWorld(tmpPtr->getX(), tmpPtr->getY(), tmpPose.pose.position.x, tmpPose.pose.position.y);
             tmpPose.header.frame_id = frame_id_;
-            plan.push_back(tmpPose);
+            replan.push_back(tmpPose);
             tmpPtr = tmpPtr->getPerd();
         }
+        int size = replan.size();
+        for (int i = 0;i < size; ++i) {
+            plan.push_back(replan[size - i -1 ]);
+        }
     }
+
+
+
+    
+
+
 
 }

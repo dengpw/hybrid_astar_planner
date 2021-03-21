@@ -16,6 +16,7 @@ public:
     
     void setX(int _x) { x = _x; }
     void setY(int _y) { y = _y; }
+    void setCost(unsigned int C) { cost = C; }
     void setG(float _g) { g = _g; }
     void setH(float _h) { h = _h; }
     void setClosedSet() { c = true; o = false; }
@@ -28,6 +29,7 @@ public:
     float getG() const { return g; }
     float calcH(Node2D const *goal);
     int getindex(int width) { return (y * width + x); }
+    int getCost() {return cost;}
     bool isOpenSet() { return o; }
     bool isClosedSet() { return c; }
     Node2D* getPerd() { return perd; }
@@ -36,6 +38,8 @@ public:
         int x;
         /// the y position
         int y;
+        /// the cost of current node
+        unsigned int cost;
         /// the cost-so-far
         float g;
         /// the cost-to-go

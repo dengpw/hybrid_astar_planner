@@ -66,6 +66,8 @@
         "set": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "*.txx": "cpp",
+        "valarray": "cpp"
     }
 }

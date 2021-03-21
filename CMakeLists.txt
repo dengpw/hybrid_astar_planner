@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   nav_core
   tf2_ros
+  ompl
 )
 
 catkin_package(
@@ -23,13 +24,22 @@ catkin_package(
   roscpp
   nav_core
   tf2_ros
+  ompl
 )
 
 include_directories(
   include
   test_the_plugin/include
   ${catkin_INCLUDE_DIRS}
+  ${OMPL_INCLUDE_DIRS}
 )
+
+# find_package(ompl REQUIRED)
+
+# if(NOT OMPL_FOUND)
+#     message(AUTHOR_WARNING,"Open Motion Planning Library not found")
+# endif(NOT OMPL_FOUND)
+
 
 add_executable(test_planner test_the_plugin/src/test.cpp test_the_plugin/src/test_plugins.cpp)
 target_link_libraries(test_planner ${catkin_LIBRARIES})
@@ -48,6 +58,7 @@ add_library(${PROJECT_NAME}
   src/algorithm.cpp
   src/dubins.cpp
 )
+target_link_libraries(${PROJECT_NAME} ${OMPL_LIBRARIES})
 
 install(FILES bgp_plugin.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}

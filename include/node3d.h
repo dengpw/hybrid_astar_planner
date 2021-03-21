@@ -17,6 +17,7 @@ public:
     
     void setX(float _x) { x = _x; }
     void setY(float _y) { y = _y; }
+    void setCost(unsigned int C) { cost = C; }
     void setT(float _t);
     void setG(float _g) { g = _g; }
     void setH(float _h) { h = _h; }
@@ -24,12 +25,12 @@ public:
     void setOpenSet() { o = true; }
     void setPerd(Node3D* _perd) { perd = _perd; }
     void setReverse(bool r) { reverse = r; }
-    float getX(void) { return x; }
-    float getY(void) { return y; }
-    float getT(void) { return t * Constants::deltaHeadingRad; }
-    float getTheta(void) { return theta; }
+    float getX(void) const { return x; }
+    float getY(void) const { return y; }
+    float getT(void) const { return t * Constants::deltaHeadingRad; }
+    float getTheta(void) const { return theta; }
     float getF(void) const { return g + h; }
-
+    int getCost() {return cost;}
     /**
      * @brief caculate the G value of the node
      * @return the G value of the node
@@ -58,6 +59,9 @@ public:
         float y;
         /// the t position
         int t;
+
+        unsigned int cost;
+
         float theta;
         /// the cost-so-far
         float g;

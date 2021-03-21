@@ -5,6 +5,8 @@
 #include "algorithm.h"
 #include "expander.h"
 #include "node2d.h"
+#include <visualization_msgs/MarkerArray.h>
+#include <ros/publisher.h>
 namespace hybrid_astar_planner {
 class Index {
     public:
@@ -35,7 +37,7 @@ class astar : public Expander
      * @return true if a valid plan was found.
     */
     bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan );
+                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes );
     ~astar(){ }
     private:
 

@@ -1,11 +1,18 @@
 #ifndef _ALGORITHM_H
 #define _ALGORITHM_H
 
+#include <ompl/base/spaces/ReedsSheppStateSpace.h>
+#include <ompl/base/spaces/DubinsStateSpace.h>
+#include <ompl/base/spaces/SE2StateSpace.h>
+#include <ompl/base/State.h>
+#include <ompl/base/State.h>
 #include "node3d.h"
 #include "node2d.h"
 #include "collisiondetection.h"
 #include <boost/heap/binomial_heap.hpp>
 #include <costmap_2d/costmap_2d.h>
+#include <geometry_msgs/PoseStamped.h>
+typedef ompl::base::SE2StateSpace::StateType State;
 namespace hybrid_astar_planner {
 // OPEN LIST AS BOOST IMPLEMENTATION
 struct CompareNodes {
@@ -20,6 +27,9 @@ struct CompareNodes {
 };
 Node3D* dubinsShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costmap);
 
+void  updateH(Node3D& start, const Node3D& goal, Node2D* nodes2D, float* dubinsLookup, int width, int height, costmap_2d::Costmap2D* costmap);
+float AstarInspiration(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+                                        std::vector<geometry_msgs::PoseStamped>& plan, costmap_2d::Costmap2D* costmap, std::string frame_id_);
 }
 
 #endif //end of algorithm.h

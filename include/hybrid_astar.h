@@ -5,9 +5,11 @@
 #include "algorithm.h"
 #include "expander.h"
 #include "node3d.h"
+#include <visualization_msgs/MarkerArray.h>
+#include <ros/publisher.h>
 // #define TEST
-#define point_accuracy 0.5
-#define theta_accuracy 0.5
+#define point_accuracy 0.2
+#define theta_accuracy 0.2
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander
@@ -32,7 +34,7 @@ class hybridAstar : public Expander
      * @return true if a valid plan was found.
     */
     bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan );
+                                        int cellsX, int cellsY, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes);
     
     /**
      * @brief Default deconstructor for the HybridAStarPlanner object

@@ -4,12 +4,12 @@
 // 设计启发函数
 namespace hybrid_astar_planner {
     void Node3D::setT(float _t) {
-        if( _t <0 ) {
-            t = 72 + _t / Constants::deltaHeadingRad;
-        }
-        else {
+        // if( _t <0 ) {
+        //     t = 72 + _t / Constants::deltaHeadingRad;
+        // }
+        // else {
             t = _t / Constants::deltaHeadingRad; 
-        }
+        // }
         
     }
     

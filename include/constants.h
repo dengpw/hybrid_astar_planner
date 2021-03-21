@@ -12,7 +12,7 @@ static const bool reverse = true;
 
 /// [#] --- Limits the maximum search depth of the algorithm, possibly terminating without the solution
 /// 最大迭代次数
-static const int iterations = 60000; 
+static const int iterations = 30000; 
 
 /// [m] --- Uniformly adds a padding around the vehicle
 /// 膨胀范围
@@ -55,6 +55,9 @@ static const float deltaHeadingNegRad = 2 * M_PI - deltaHeadingRad;
 /// A flag to toggle the connection of the path via Dubin's shot (true = on; false = off)
 static const bool dubinsShot = true; //切换Dubin路径的开关
 
+
+/// A flag to toggle the Dubin's heuristic, this should be false, if reversing is enabled (true = on; false = off)
+static const bool dubins = false;//Dubin路径的切换开关: 若车子可以倒退，值为false
 // ___________________
 // HEURISTIC CONSTANTS
 
@@ -63,9 +66,9 @@ static const float factor2D = sqrt(5) / sqrt(2) + 1;
 /// [#] --- A movement cost penalty for turning (choosing non straight motion primitives)
 static const float penaltyTurning = 1.05;
 /// [#] --- A movement cost penalty for reversing (choosing motion primitives > 2)
-static const float penaltyReversing = 2.0;
+static const float penaltyReversing = 1.5;
 /// [#] --- A movement cost penalty for change of direction (changing from primitives < 3 to primitives > 2)
-static const float penaltyCOD = 2.0;
+static const float penaltyCOD = 1.5;
 /// [m] --- The distance to the goal when the analytical solution (Dubin's shot) first triggers
 static const float dubinsShotDistance = 100;
 /// [m] --- The step size for the analytical solution (Dubin's shot) primarily relevant for collision checking

@@ -5,6 +5,8 @@
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <boost/heap/binomial_heap.hpp>
+#include <ros/publisher.h>
+#include <visualization_msgs/MarkerArray.h>
 namespace hybrid_astar_planner {
 
 /**
@@ -20,7 +22,7 @@ class Expander
     }
 
     virtual bool calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ) = 0;
+                                        int cells_x, int cells_y, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes) = 0;
     virtual ~Expander() {}
     protected:
     std::string frame_id_;

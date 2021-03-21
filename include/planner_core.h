@@ -43,6 +43,7 @@
 #include <nav_core/base_global_planner.h>
 #include <visualization_msgs/MarkerArray.h>
 #include "node2d.h"
+#include "node3d.h"
 namespace hybrid_astar_planner {
 //类插件实现的多态的时候，若在头文件中定义了函数，那么就必须有这个函数的实现，否则会报错！！！
 /**
@@ -113,7 +114,6 @@ class HybridAStarPlanner : public nav_core::BaseGlobalPlanner {
          * @brief Clarn the visualization_msgs::Marker 清理可视化信息的标记点
          */
         void clearPathNodes(void);
-
 
 
 

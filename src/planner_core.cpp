@@ -40,6 +40,7 @@ namespace hybrid_astar_planner
             nh2.param("use_hybrid_astar", use_hybrid_astar, true);
             costmap = _costmap;
             frame_id_ = frame_id;
+            std::cout << frame_id << std::endl;
             //  初始化发布路径的主题
             plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
             path_vehicles_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("pathVehicle", 1);
@@ -84,7 +85,7 @@ namespace hybrid_astar_planner
         }
         plan.clear();
         //正式将参数传入规划器中
-        _planner->calculatePath(start, goal , costmap->getSizeInCellsX(), costmap->getSizeInCellsY(), plan);
+        _planner->calculatePath(start, goal , costmap->getSizeInCellsX(), costmap->getSizeInCellsY(), plan, path_vehicles_pub_, pathNodes);
         //参数后期处理，发布到RViz上进行可视化
         clearPathNodes();
         publishPlan(plan);//path只能发布2D的节点
@@ -105,13 +106,15 @@ namespace hybrid_astar_planner
     bool HybridAStarPlanner::checkgoalPose(const geometry_msgs::PoseStamped &goal) {
         unsigned int goalx,goaly;
         if (costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, goalx, goaly)) {
-            if (costmap->getCost( goalx, goaly ) > 2) {
+            if (costmap->getCost( goalx, goaly ) > 252) {
+                // std::cout << costmap->getCost(goalx, goaly) << std::endl;
+                ROS_WARN("The Goal pose is out of the map! %d",costmap->getCost(goalx, goaly));
                 ROS_WARN("The Goal pose is occupied , please reset the goal!");
                 return false;
             }
             return true;
         }
-        ROS_WARN("The Goal pose is out of the map!");
+
         return false;
     }//end of checkgoalPose
 

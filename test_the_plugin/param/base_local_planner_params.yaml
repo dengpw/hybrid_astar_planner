@@ -33,7 +33,7 @@ TebLocalPlannerROS:
   
   global_plan_overwrite_orientation: True #覆盖由全局规划器提供的局部子目标的方向
   max_global_plan_lookahead_dist: 3.0 #指定考虑优化的全局计划子集的最大长度
-  feasibility_check_no_poses: 1 #每个采样间隔的姿态可行性分析数，default：4
+  feasibility_check_no_poses: 4 #每个采样间隔的姿态可行性分析数，default：4
       
 
   allow_init_with_backwards_motion: True
