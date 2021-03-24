@@ -189,11 +189,7 @@ namespace hybrid_astar_planner {
             (nodeY < (goalY + point_accuracy) && nodeY > (goalY - point_accuracy)) ) {
                 if (node->getT()  < (goalPose->getT()+theta_accuracy )&& \
                     node->getT()  > (goalPose->getT()-theta_accuracy )) {
-                        std::cout << node->getT() << "the T of goalPose" << goalPose->getT();
                         return true;
-                }
-                else {
-                    std::cout << node->getT() << "the T of goalPose" << goalPose->getT();
                 }
             }
         return false;
