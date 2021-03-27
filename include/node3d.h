@@ -34,6 +34,7 @@ public:
     /**
      * @brief caculate the G value of the node
      * @return the G value of the node
+     * G值为状态空间中从初始节点到当前此节点的实际代价
      *
     */
     float calcG(void);
@@ -59,9 +60,9 @@ public:
         float y;
         /// the t position
         int t;
-
+        /// the cost of this node in costmap
         unsigned int cost;
-
+        /// the theta of this node 
         float theta;
         /// the cost-so-far
         float g;

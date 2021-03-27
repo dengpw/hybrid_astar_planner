@@ -1,10 +1,3 @@
-/**  FILE: dubins.cpp
- * @brief   Dubins路径生成类的实现，用于生成向前行走的轨迹
- *          Dubins路径是基础中的基础，扩展的Reeds-Shepp路径是Dubins路径的扩展（包括后退方向）
- *          Dubins路径遵循车辆运动学约束。这里使用的代码直接采用Andrew Walker编写的Dubins类：
- *          https://github.com/AndrewWalker/Dubins-Curves/
- */
-
 // Copyright (c) 2008-2014, Andrew Walker
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy

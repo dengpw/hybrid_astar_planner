@@ -3,21 +3,19 @@
 #include <math.h>
 // 设计启发函数
 namespace hybrid_astar_planner {
+
     void Node3D::setT(float _t) {
-        // if( _t <0 ) {
-        //     t = 72 + _t / Constants::deltaHeadingRad;
-        // }
-        // else {
+
             t = _t / Constants::deltaHeadingRad; 
-        // }
         
     }
     
+    
     float Node3D::calcG() {
         float g;
-
         if(reverse) {
-            if (reverse != perd->reverse) {//对方向改变进行的惩罚
+            // 如果进行的是倒车，对倒车、转向、改变方向进行惩罚
+            if (reverse != perd->reverse) {                     // 对改变行驶方向进行惩罚
                 g = Constants::dx[0] * Constants::penaltyCOD * Constants::penaltyReversing;
             }
             else {
@@ -25,20 +23,17 @@ namespace hybrid_astar_planner {
             }
         }
         else {
-            if (reverse != perd->reverse) {//对方向改变进行的惩罚
+            // 如果此时位车辆前进情况，对其进行响应的代价计算
+            if (reverse != perd->reverse) {                     //对方向改变进行的惩罚
                 g = Constants::dx[0] * Constants::penaltyCOD;
             }
             else {
-                // std::cout << "the t of this node: " << t << " the t of pred node: " << perd->t << std::endl;
                 if (t == perd->t) {
                     g = Constants::dx[0];
-                    
                 }
                 else {
-                    g = Constants::dx[0] * Constants::penaltyTurning;// 
-                    // printf("hello \n");
+                    g = Constants::dx[0] * Constants::penaltyTurning;
                 }
-                
             }
         }
         return g + perd->getG();

@@ -4,17 +4,18 @@
 #include "hybrid_astar.h"
 #include <tf/transform_datatypes.h>
 #include "visualize.h"
-// #include "planner_core.h"
+// #define SearchingVisulize
 namespace hybrid_astar_planner {
     bool hybridAstar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        int cellsX, int cellsY, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes) {
-        ROS_INFO("Using hybrid_astar mode!");
-        std::cout << "the resolution of cost map " << costmap->getResolution() << std::endl;
-        // 初始化优先队列，这里使用的是二项堆
+            int cellsX, int cellsY, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes) {
+        
+        // 初始化优先队列，未来改善混合A*算法性能，这里使用的是二项堆有限队列
         boost::heap::binomial_heap<Node3D*,boost::heap::compare<CompareNodes>> openSet;
         // 初始化并创建一些参数。
         // 创建charMap,charMap中存储的是地图的障碍物信息
         const unsigned char* charMap = costmap->getCharMap(); 
+        // 这里把resolution写死，由于本人能力有限暂时此功，其实是无奈之举，未来需要在后续的代码中加入能够自动调节分辨率的功能，增加代码鲁棒性
+        // 分辨率太高会导致混合A*计算量过高，且意义不大
         float resolution = 0.125;//costmap->getResolution()
         unsigned int originalX, originalY, goalX, goalY;
         int cells_x,cells_y;
@@ -28,15 +29,12 @@ namespace hybrid_astar_planner {
         costmap->worldToMap(0, 0, dx, dy);
         dx = dx/2.5;
         dy = dy/2.5;
-        // std::cout << "x : " << cells_x << " | y : " << cells_y << std::endl;
         // t为目标点朝向
         t = tf::getYaw(start.pose.orientation);
         Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
  
         t = tf::getYaw(goal.pose.orientation);
         Node3D* goalPose = new Node3D(goal.pose.position.x, goal.pose.position.y, t , 999, 0, false, nullptr);
-        // updateH(*startPose, *goalPose, NULL, NULL, cells_x, cells_y, costmap);
-        // return NULL;
         Node3D* pathNode3D = new Node3D[cells_x * cells_y * Constants::headings]();
 
         if (Constants::reverse) {
@@ -55,9 +53,11 @@ namespace hybrid_astar_planner {
             ++counter;
             // 根据混合A*算法，取堆顶的元素作为下查找节点
             tmpNode = openSet.top();
-            // std::cout << "the G of node : " << tmpNode->getG() << "the F of node : " << tmpNode->getF() << std::endl;
-            // std::cout << "x : " << tmpNode->getX() << " | y : " << tmpNode->getY() << std::endl;
-            // publishSearchNodes(*tmpNode, pub, pathNodes,counter);
+
+            #ifdef SearchingVisulize
+            publishSearchNodes(*tmpNode, pub, pathNodes,counter);
+            #endif
+
             openSet.pop();      //出栈
             if ( reachGoal(tmpNode, goalPose) ) {
                 
@@ -69,14 +69,12 @@ namespace hybrid_astar_planner {
             }
             else {
                 if (Constants::dubinsShot && tmpNode->isInRange(*goalPose) && !tmpNode->isReverse()) {
+
                 nSucc = dubinsShot(*tmpNode, *goalPose, costmap);
-                    /*
-                    * dybinsShot方法之后再看
-                    */
+
                     //如果Dubins方法能直接命中，即不需要进入Hybrid A*搜索了，直接返回结果
-                    if (nSucc != nullptr && reachGoal(nSucc, goalPose) ) {//&& *nSucc == *goalPose
-                        //DEBUG
-                        // std::cout << "max diff " << max << std::endl;
+                    if (nSucc != nullptr && reachGoal(nSucc, goalPose) ) {
+
                         delete [] pathNode3D;
                         nodeToPlan(nSucc, plan);
                         return true;//如果下一步是目标点，可以返回了
@@ -97,31 +95,18 @@ namespace hybrid_astar_planner {
                 pathNode3D[iPred].setX(point->getX());
                 pathNode3D[iPred].setY(point->getY());
                 pathNode3D[iPred].setT(point->getT());
-                
-                // std::cout << "push to binanalheap  :: " << iPred << std::endl;
+
                 if (!pathNode3D[iPred].isClosedSet()) {
                     g = point->calcG();
                     if (!pathNode3D[iPred].isOpenSet() || (g < pathNode3D[iPred].getG())) {//
-                        // point->setPerd(tmpNode);
-                        // std::cout << "push to binanalheap" << std::endl;
                         point->setG(g);
                         pathNode3D[iPred].setG(g);
                         if(!pathNode3D[iPred].isOpenSet()) {
                             updateH(*point, *goalPose, NULL, NULL, cells_x, cells_y, costmap);
-                            // point->calcH(goalPose);
-
-
                             point->setOpenSet();
-                            
-
-
-                            // 如果符合拓展点要求，则将此点加入优先队列中
-                            openSet.push(point);
+                           
                         }
-                        else {
-                            openSet.push(point);
-                        }
-
+                        openSet.push(point);    // 如果符合拓展点要求，则将此点加入优先队列中
                     }
                 }
             }
@@ -129,7 +114,7 @@ namespace hybrid_astar_planner {
 
         // goalPose->setPerd(startPose);
         // nodeToPlan(goalPose, plan);
-        AstarInspiration(start, goal, plan, costmap, frame_id_);
+        AstarInspiration(start, goal, plan, costmap, frame_id_, false);
         delete [] pathNode3D;
         return false;
     }
