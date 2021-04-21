@@ -29,7 +29,7 @@ static const double length = 0.22 + 2 * bloating;//车的长度
 * 车身长度需要0.15m(长) * 0.16m(轮宽)
 */
 /// [m] --- the Minimum turning radius 车辆最小转弯半径 
-static const double r = 1.5;
+static const double r = 1;
 
 /// [m] --- The number of discretizations in heading
 /// 车体朝向的离散数量

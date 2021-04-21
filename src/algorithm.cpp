@@ -249,7 +249,7 @@ Node3D* reedsSheppShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costm
 
     //collision check
     costmap->worldToMap(dubinsNodes[i].getX(), dubinsNodes[i].getY(), poseX, poseY);
-    if (costmap->getCost(poseX, poseY) <= 1) {
+    if (costmap->getCost(poseX, poseY) < 100) {
     // set the predecessor to the previous step
     if (i > 0) {
       dubinsNodes[i].setPerd(&dubinsNodes[i - 1]);
