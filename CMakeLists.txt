@@ -57,6 +57,7 @@ add_library(${PROJECT_NAME}
   src/hybrid_astar.cpp
   src/algorithm.cpp
   src/dubins.cpp
+  src/ReedsShepp.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${OMPL_LIBRARIES})
 

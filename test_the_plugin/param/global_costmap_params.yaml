@@ -6,7 +6,7 @@ global_costmap:
   static_map: true
   transform_tolerance: 0.5
   cost_scaling_factor: 10.0
-  inflation_radius: 0.4  
+  # inflation_radius: 0.4  
   resolution: 1.0
   plugins:
       - {name: static_map,       type: "costmap_2d::StaticLayer"}

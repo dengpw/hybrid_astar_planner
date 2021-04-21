@@ -124,7 +124,8 @@ namespace hybrid_astar_planner
         }
         plan.clear();
         //正式将参数传入规划器中
-        _planner->calculatePath(start, goal , costmap->getSizeInCellsX(), costmap->getSizeInCellsY(), plan, path_vehicles_pub_, pathNodes);
+        if(!_planner->calculatePath(start, goal , costmap->getSizeInCellsX(), costmap->getSizeInCellsY(), plan, path_vehicles_pub_, pathNodes))
+        return false;
         //参数后期处理，发布到RViz上进行可视化
         clearPathNodes();
 

@@ -1,4 +1,6 @@
 #include "node3d.h"
+// #include "node2d.h"
+// #include <unordered_map>
 #include <math.h>
 #include "constants.h"
 #include "hybrid_astar.h"
@@ -6,9 +8,12 @@
 #include "visualize.h"
 // #define SearchingVisulize
 namespace hybrid_astar_planner {
-    bool hybridAstar::calculatePath(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-            int cellsX, int cellsY, std::vector<geometry_msgs::PoseStamped>& plan ,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes) {
-        
+        bool hybridAstar::calculatePath(
+        const geometry_msgs::PoseStamped& start, 
+        const geometry_msgs::PoseStamped& goal,
+        int cellsX, int cellsY, std::vector<geometry_msgs::PoseStamped>& plan,
+        ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes) {
+        ros::Time t0 = ros::Time::now();
         // 初始化优先队列，未来改善混合A*算法性能，这里使用的是二项堆有限队列
         boost::heap::binomial_heap<Node3D*,boost::heap::compare<CompareNodes>> openSet;
         // 初始化并创建一些参数。
@@ -26,17 +31,36 @@ namespace hybrid_astar_planner {
         int iPred, iSucc;
         float t, g;
         unsigned int dx,dy;
+        unsigned int goal_x, goal_y, start_x, start_y;
         costmap->worldToMap(0, 0, dx, dy);
         dx = dx/2.5;
         dy = dy/2.5;
         // t为目标点朝向
         t = tf::getYaw(start.pose.orientation);
         Node3D* startPose = new Node3D(start.pose.position.x, start.pose.position.y, t , 0, 0, false, nullptr);
- 
+
+        costmap->worldToMap(goal.pose.position.x, 
+                            goal.pose.position.y, goal_x, goal_y);
+        costmap->worldToMap(start.pose.position.x, 
+                            start.pose.position.y, start_x, start_y);
+        std::cout << start_x << "  " << start_y << std::endl;
+        // ROS_INFO("the cost of node %d ",costmap->getCost(goal_x, goal_y));
+        std::unordered_map<int, std::shared_ptr<Node2D>> dp_map = 
+            grid_a_star_heuristic_generator_->GenerateDpMap(goal_x, goal_y, costmap);
+        if (dp_map.find(start_y * cellsX + start_x) != dp_map.end()) {
+            std::cout << "node is in the set" << std::endl;
+            ROS_INFO("the h of node %f ",dp_map[start_y * cellsX + start_x]->getG()/20);
+        }
         t = tf::getYaw(goal.pose.orientation);
         Node3D* goalPose = new Node3D(goal.pose.position.x, goal.pose.position.y, t , 999, 0, false, nullptr);
+        //************************************************
+        //下面框起来的这一句代码效率奇低且代价过大，需要修改！！！
         Node3D* pathNode3D = new Node3D[cells_x * cells_y * Constants::headings]();
-
+        //************************************************
+        // ros::Time t2 = ros::Time::now();
+        // ros::Duration d(t2 - t0);
+        // std::cout << "using in ms: " << d * 1000 << std::endl;
+        // //************************************************
         if (Constants::reverse) {
             dir = 6;
         }
@@ -48,6 +72,7 @@ namespace hybrid_astar_planner {
         pathNode3D[startPose->getindex(cells_x, Constants::headings, resolution, dx, dy)].setClosedSet();
         Node3D* tmpNode;
         Node3D* nSucc;
+
         while(openSet.size() && counter < Constants::iterations) {
 
             ++counter;
@@ -60,7 +85,9 @@ namespace hybrid_astar_planner {
 
             openSet.pop();      //出栈
             if ( reachGoal(tmpNode, goalPose) ) {
-                
+                ros::Time t1 = ros::Time::now();
+                ros::Duration d(t1 - t0);
+                std::cout << "got plan in ms: " << d * 1000 << std::endl;
                 ROS_INFO("Got a plan,loop %d times!",counter);
                 nodeToPlan(tmpNode, plan);
                 
@@ -70,12 +97,15 @@ namespace hybrid_astar_planner {
             else {
                 if (Constants::dubinsShot && tmpNode->isInRange(*goalPose) && !tmpNode->isReverse()) {
 
-                nSucc = dubinsShot(*tmpNode, *goalPose, costmap);
-
+                // nSucc = dubinsShot(*tmpNode, *goalPose, costmap);
+                nSucc = reedsSheppShot(*tmpNode, *goalPose, costmap);
                     //如果Dubins方法能直接命中，即不需要进入Hybrid A*搜索了，直接返回结果
                     if (nSucc != nullptr && reachGoal(nSucc, goalPose) ) {
-
+                        ros::Time t1 = ros::Time::now();
+                        ros::Duration d(t1 - t0);
+                        std::cout << "got plan in ms: " << d * 1000 << std::endl;
                         delete [] pathNode3D;
+                        ROS_INFO("Got a plan,loop %d times!",counter);
                         nodeToPlan(nSucc, plan);
                         return true;//如果下一步是目标点，可以返回了
                     }
@@ -102,7 +132,9 @@ namespace hybrid_astar_planner {
                         point->setG(g);
                         pathNode3D[iPred].setG(g);
                         if(!pathNode3D[iPred].isOpenSet()) {
-                            updateH(*point, *goalPose, NULL, NULL, cells_x, cells_y, costmap);
+                            costmap->worldToMap(point->getX(), 
+                            point->getY(), start_x, start_y);
+                            updateH(*point, *goalPose, NULL, NULL, cells_x, cells_y, dp_map[start_y * cellsX + start_x]->getG()/20);
                             point->setOpenSet();
                            
                         }
@@ -114,7 +146,7 @@ namespace hybrid_astar_planner {
 
         // goalPose->setPerd(startPose);
         // nodeToPlan(goalPose, plan);
-        AstarInspiration(start, goal, plan, costmap, frame_id_, false);
+        // AstarInspiration(start, goal, plan, costmap, frame_id_, false);
         delete [] pathNode3D;
         return false;
     }
