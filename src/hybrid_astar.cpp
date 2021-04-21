@@ -104,6 +104,8 @@ namespace hybrid_astar_planner {
                         ros::Time t1 = ros::Time::now();
                         ros::Duration d(t1 - t0);
                         std::cout << "got plan in ms: " << d * 1000 << std::endl;
+                        std::cout << "the t of start pose" << tmpNode->getT();
+                        std::cout << "the t of goal pose" << goalPose->getT();
                         delete [] pathNode3D;
                         ROS_INFO("Got a plan,loop %d times!",counter);
                         nodeToPlan(nSucc, plan);

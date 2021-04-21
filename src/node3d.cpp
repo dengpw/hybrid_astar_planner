@@ -5,8 +5,10 @@
 namespace hybrid_astar_planner {
 
     void Node3D::setT(float _t) {
-
-            t = _t / Constants::deltaHeadingRad; 
+        if (_t>3.1415)
+            _t = _t - 6.283;
+        t = _t / Constants::deltaHeadingRad;
+             
         
     }
     

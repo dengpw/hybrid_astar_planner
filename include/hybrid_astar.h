@@ -8,8 +8,8 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <ros/publisher.h>
 // #define TEST
-#define point_accuracy 0.4
-#define theta_accuracy 2
+#define point_accuracy 0.2
+#define theta_accuracy 0.2
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander

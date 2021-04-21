@@ -13,6 +13,6 @@
         <param name="use_hybrid_astar" value="true" />
     </node>
     <node name="tf_broadcaster" pkg="hybrid_astar_planner" type="tf_test_broadcaster" output="screen" />
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find hybrid_astar_planner)/test_the_plugin/maps/mymap4.yaml" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find hybrid_astar_planner)/test_the_plugin/maps/mymap2077.yaml" />
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hybrid_astar_planner)/test_the_plugin/launch/config.rviz" />
 </launch>

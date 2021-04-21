@@ -124,23 +124,23 @@ void  updateH(Node3D& start, const Node3D& goal, Node2D* nodes2D, float* dubinsL
   float twoDoffset = 0;
 
   //假如车子可以后退，则可以启动Reeds-Shepp 算法
-  if (Constants::reverse && !Constants::dubins) {
-    //    ros::Time t0 = ros::Time::now();
+  // if (Constants::reverse && !Constants::dubins) {
+  //   //    ros::Time t0 = ros::Time::now();
 
-    // ompl::base::ReedsSheppStateSpace reedsSheppPath(Constants::r);
-    // State* rsStart = (State*)reedsSheppPath.allocState();
-    // State* rsEnd = (State*)reedsSheppPath.allocState();
-    // rsStart->setXY(start.getX(), start.getY());
-    // rsStart->setYaw(start.getT());
-    // rsEnd->setXY(goal.getX(), goal.getY());
-    // rsEnd->setYaw(goal.getT());
-    // reedsSheppCost = reedsSheppPath.distance(rsStart, rsEnd) * 1 + 0.04*start.getCost();
+  //   // ompl::base::ReedsSheppStateSpace reedsSheppPath(Constants::r);
+  //   // State* rsStart = (State*)reedsSheppPath.allocState();
+  //   // State* rsEnd = (State*)reedsSheppPath.allocState();
+  //   // rsStart->setXY(start.getX(), start.getY());
+  //   // rsStart->setYaw(start.getT());
+  //   // rsEnd->setXY(goal.getX(), goal.getY());
+  //   // rsEnd->setYaw(goal.getT());
+  //   // reedsSheppCost = reedsSheppPath.distance(rsStart, rsEnd) * 0.8;
 
-    // std::cout << "the cost of reed_Shepp : " << reedsSheppCost << std::endl;
-    //    ros::Time t1 = ros::Time::now();
-    //    ros::Duration d(t1 - t0);
-    //    std::cout << "calculated Reed-Sheep Heuristic in ms: " << d * 1000 << std::endl;
-  }
+  //   // std::cout << "the cost of reed_Shepp : " << reedsSheppCost << std::endl;
+  //   //    ros::Time t1 = ros::Time::now();
+  //   //    ros::Duration d(t1 - t0);
+  //   //    std::cout << "calculated Reed-Sheep Heuristic in ms: " << d * 1000 << std::endl;
+  // }
     
     // ros::Time t0 = ros::Time::now();
     // geometry_msgs::PoseStamped start2d;
