@@ -106,7 +106,7 @@ namespace hybrid_astar_planner
         // std::cout << "the goal pose of planner x:" << goal.pose.position.x << " y:" << goal.pose.position.y << std::endl;
         Expander* _planner;
 
-        ROS_INFO("the resolution of cost map: %f ",costmap->getResolution());
+        // ROS_INFO("the resolution of cost map: %f ",costmap->getResolution());
         if (use_hybrid_astar) {
             
             _planner = new hybridAstar(frame_id_,costmap);

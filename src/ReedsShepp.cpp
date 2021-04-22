@@ -112,30 +112,30 @@ namespace
     void CSC(double x, double y, double phi, ReedsSheppStateSpace::ReedsSheppPath &path)
     {
         double t, u, v, Lmin = path.length(), L;
-        // if (LpSpLp(x, y, phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v)))
-        // {
-        //     path = ReedsSheppStateSpace::ReedsSheppPath(
-        //         ReedsSheppStateSpace::reedsSheppPathType[14], t, u, v);
-        //     Lmin = L;
-        // }
-        // if (LpSpLp(-x, y, -phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // timeflip
-        // {
-        //     path = ReedsSheppStateSpace::ReedsSheppPath(
-        //         ReedsSheppStateSpace::reedsSheppPathType[14], -t, -u, -v);
-        //     Lmin = L;
-        // }
-        // if (LpSpLp(x, -y, -phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // reflect
-        // {
-        //     path = ReedsSheppStateSpace::ReedsSheppPath(
-        //         ReedsSheppStateSpace::reedsSheppPathType[15], t, u, v);
-        //     Lmin = L;
-        // }
-        // if (LpSpLp(-x, -y, phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // timeflip + reflect
-        // {
-        //     path = ReedsSheppStateSpace::ReedsSheppPath(
-        //         ReedsSheppStateSpace::reedsSheppPathType[15], -t, -u, -v);
-        //     Lmin = L;
-        // }
+        if (LpSpLp(x, y, phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v)))
+        {
+            path = ReedsSheppStateSpace::ReedsSheppPath(
+                ReedsSheppStateSpace::reedsSheppPathType[14], t, u, v);
+            Lmin = L;
+        }
+        if (LpSpLp(-x, y, -phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // timeflip
+        {
+            path = ReedsSheppStateSpace::ReedsSheppPath(
+                ReedsSheppStateSpace::reedsSheppPathType[14], -t, -u, -v);
+            Lmin = L;
+        }
+        if (LpSpLp(x, -y, -phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // reflect
+        {
+            path = ReedsSheppStateSpace::ReedsSheppPath(
+                ReedsSheppStateSpace::reedsSheppPathType[15], t, u, v);
+            Lmin = L;
+        }
+        if (LpSpLp(-x, -y, phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v))) // timeflip + reflect
+        {
+            path = ReedsSheppStateSpace::ReedsSheppPath(
+                ReedsSheppStateSpace::reedsSheppPathType[15], -t, -u, -v);
+            Lmin = L;
+        }
 
         if (LpSpRp(x, y, phi, t, u, v) && Lmin > (L = fabs(t) + fabs(u) + fabs(v)))
         {

@@ -8,8 +8,8 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <ros/publisher.h>
 // #define TEST
-#define point_accuracy 0.2
-#define theta_accuracy 0.2
+#define point_accuracy 0.5
+#define theta_accuracy 2
 namespace hybrid_astar_planner {
 
 class hybridAstar : public Expander
@@ -52,7 +52,7 @@ class hybridAstar : public Expander
      * @param cells_y the number of the cells of the costmap in y axis
      * @param charMap 
     */
-    std::vector<Node3D*> gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D* pathNode3D, Node3D *point);
+    std::vector<Node3D*> gatAdjacentPoints(int dir, int cells_x, int cells_y, const unsigned char* charMap, Node3D *point);
 
     /**
      * @brief judge whether is reach the goal pose

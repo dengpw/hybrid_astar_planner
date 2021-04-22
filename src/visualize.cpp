@@ -26,7 +26,7 @@ namespace hybrid_astar_planner {
         }
 
         plan_pub_.publish(gui_path);
-        ROS_INFO("Publish the path to Rviz");
+        // ROS_INFO("Publish the path to Rviz");
         
     }//end of publishPlan
 
@@ -72,7 +72,7 @@ namespace hybrid_astar_planner {
         node.action = 3;
         pathNodes.markers.push_back(node);
         path_vehicles_pub_.publish(pathNodes);
-        ROS_INFO("Clean the path nodes");
+        // ROS_INFO("Clean the path nodes");
     }
 
  void publishSearchNodes(Node3D node,ros::Publisher& pub, visualization_msgs::MarkerArray& pathNodes, int i) {
