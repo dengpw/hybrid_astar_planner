@@ -60,14 +60,14 @@ std::unordered_map<int, std::shared_ptr<Node2D>> GridSearch::GenerateDpMap(
                 }
 
             } else {
-                ++counter;
+                // ++counter;
                 next_node->setPerd_(current_node);
                 open_set.emplace(next_node->getindex(cells_x), next_node );
                 open_pq.emplace(next_node->getindex(cells_x), next_node->getG());
             }
         }
     }
-    // printf("explored node num is : %d \n",counter);
+    printf("X %d y %d  explored node num is : %d \n", cells_x, cells_y, counter);
     return dp_map_;
 }
 
@@ -81,7 +81,9 @@ std::vector<std::shared_ptr<Node2D>> GridSearch::getAdjacentPoints(int cells_x,
             if (charMap[x  + y* cells_x] < 250 && 
                 charMap[x  + y* cells_x] >= 0 &&
                 x < cells_x &&
-                y < cells_y ) {
+                y < cells_y &&
+                x > 0 &&
+                y > 0) {
                 std::shared_ptr<Node2D> node = std::make_shared<Node2D>(x,y);
                 if((abs(x - point->getX()) + abs(y - point->getY())) == 2) {
                     g = 1.4142;

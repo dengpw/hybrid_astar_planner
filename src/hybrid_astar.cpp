@@ -173,7 +173,7 @@ bool hybridAstar::calculatePath(
             }
             if( costmap->worldToMap(xSucc, ySucc, startX, startY)) {
                 
-                if (charMap[startX + startY * cells_x] < 253) {
+                if (charMap[startX + startY * cells_x] < 250) {
                     // index = calcIndix(xSucc, ySucc, cells_x, t + Constants::dt[i]);
                     if (i<3) {
                         tmpPtr = new Node3D(xSucc, ySucc, t + Constants::dt[i], 999, 0, false,point);//+ 
