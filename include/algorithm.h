@@ -28,8 +28,6 @@ struct CompareNodes {
 Node3D* dubinsShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costmap);
 Node3D* reedsSheppShot(Node3D& start, Node3D& goal, costmap_2d::Costmap2D* costmap);
 void  updateH(Node3D& start, const Node3D& goal, Node2D* nodes2D, float* dubinsLookup, int width, int height, float inspireAstar);
-float AstarInspiration(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
-                                        std::vector<geometry_msgs::PoseStamped>& plan, costmap_2d::Costmap2D* costmap, std::string frame_id_, bool Inspiration);
 }
 
 #endif //end of algorithm.h

@@ -53,8 +53,10 @@ static const float deltaHeadingRad = 2 * M_PI / (float)headings; //朝向离散�
 static const float deltaHeadingNegRad = 2 * M_PI - deltaHeadingRad;
 
 /// A flag to toggle the connection of the path via Dubin's shot (true = on; false = off)
-static const bool dubinsShot = true; //切换Dubin路径的开关
+static const bool dubinsShot = false; //切换Dubin路径的开关
 
+/// A flag to toggle the connection of the path via reedsSheppShot (true = on; false = off)
+static const bool reedsSheppShot = true; //切换Dubin路径的开关
 
 /// A flag to toggle the Dubin's heuristic, this should be false, if reversing is enabled (true = on; false = off)
 static const bool dubins = false;//Dubin路径的切换开关: 若车子可以倒退，值为false
