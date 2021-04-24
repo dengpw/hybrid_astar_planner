@@ -9,6 +9,4 @@ Most of them are differential models. Obviously, this kind of path is still diff
 four-wheel vehicles whitch has nonholonomic constraint (vehicles with Ackerman steering mechanism).  
 So I designed a hybrid a * plug-in for ROS as my graduation project
 
-
-
 ## How to Use
