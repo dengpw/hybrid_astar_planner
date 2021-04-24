@@ -8,7 +8,6 @@
 #include <ompl/base/State.h>
 #include "node3d.h"
 #include "node2d.h"
-#include "collisiondetection.h"
 #include <boost/heap/binomial_heap.hpp>
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PoseStamped.h>

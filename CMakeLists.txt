@@ -4,7 +4,7 @@ project(hybrid_astar_planner)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_COMPILER "g++")
 
-add_subdirectory(test_the_plugin)
+# add_subdirectory(test_the_plugin)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
