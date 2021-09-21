@@ -33,6 +33,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  * 
  *  Author:  dengpw
+ *  Email: dengpw@stu.xmu.edu.cn
  *********************************************************************/
 #include "node3d.h"
 #include <math.h>
